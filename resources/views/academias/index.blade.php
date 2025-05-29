@@ -38,14 +38,15 @@
                     @forelse ($academias as $academia)
                     <tr class="">                                
                         <td class="" >
+                            <!--<a href="{{route('academias.view',$academia->id)}}" title="Ver" class="btn btn-sm btn-info"><i class="fa-solid fa-eye"></i></a> -->
                             <a href="{{route('academias.edit',$academia->id)}}" title="Editar" class="btn btn-sm btn-primary"><i class="fa-solid fa-pencil"></i></a> 
                             <button 
-                                title="Eliminar registro"
-                                type="button" 
-                                class="btn btn-sm btn-danger"
-                                onclick="openDeleteModal({{$academia}})">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>                                    
+                            title="Eliminar registro"
+                            type="button" 
+                            class="btn btn-sm btn-danger"
+                            onclick="openDeleteModal({{$academia}})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>                                    
                         </td>
                         <td>{{$academia->academia}}</td>
                         <td>{{$academia->direccion}} ({{$academia->localidad}})</td>

@@ -12,7 +12,8 @@ class AcademiaPolicy
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
-    {    
+    {           
+        // This method is called when checking if the user can view any models. 
         return true;
     }
 
@@ -21,6 +22,8 @@ class AcademiaPolicy
      */
     public function view(User $user, Academia $academia): bool
     {
+        
+        echo "view    ";dd();
         return true;
     }
 
@@ -41,8 +44,12 @@ class AcademiaPolicy
     public function update(User $user, Academia $academia): bool
     {
 
-        //echo "update    ";dd();
-        return true;
+        
+        if($user->hasRole('super-admin')){
+            return true;
+        }     
+        // Verifica en la base de datos si user está relacionado con esa academia
+        return $user->academiasRelation()->where('academias.id', $academia->id)->exists();     
     }
 
     /**

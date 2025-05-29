@@ -34,7 +34,10 @@
                     {{ $role->name }} 
                 </option>
                 @endforeach
-            </select>            
+            </select>
+            @error('roles')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror         
         </div>
 
         <!--ACADEMIAS RELATED-->
@@ -46,7 +49,10 @@
                     {{ $academia->academia }} 
                 </option>
                 @endforeach
-            </select>            
+            </select> 
+            @error('academias')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror            
         </div>
     </div>
 

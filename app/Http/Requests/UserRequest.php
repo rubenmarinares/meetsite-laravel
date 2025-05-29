@@ -27,12 +27,20 @@ class UserRequest extends FormRequest
         $isCreating = request()->isMethod('post');
         // If the request is for creating a new user, 'required' is needed for password
 
+         $user = auth()->user();
+
+        $isNotSuperAdmin = !$user || !$user->hasRole('super-admin');
+
         return [
             'name' => ['required','string','max:255'],
             'email'=>['required','string','max:200','email',Rule::unique('users','email')->ignore($this->route('user'))],                        
             'password' => [
                             $isCreating ? 'required' : 'nullable',
                             'confirmed', Password::defaults()],
+            'roles' => [Rule::requiredIf($isNotSuperAdmin), 'array'],
+            'roles.*' => ['exists:roles,id'],
+            'academias' => [Rule::requiredIf($isNotSuperAdmin), 'array'],
+            'academias.*' => ['exists:academias,id'],
         ];
     }
 
@@ -52,6 +60,10 @@ class UserRequest extends FormRequest
             'password.max'=>'El campo contraseña no debe superar los :max caracteres',   
             'password.min'=>'El campo contraseña debe superar los :min caracteres',   
             'password.confirmed'=>'El campo contraseña ser igual que el campo confirmar contraseña',   
+            'roles.required'=>'El campo roles es obligatorio',
+            'roles.array'=>'El campo roles debe ser un array',
+            'academias.required'=>'El campo academias es obligatorio',
+            'academias.array'=>'El campo academias debe ser un array',
         ];
     }
 }

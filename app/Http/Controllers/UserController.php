@@ -12,7 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Hash;
 
-
+use Illuminate\Support\Facades\Auth;
 
 
 class UserController extends Controller
@@ -24,6 +24,8 @@ class UserController extends Controller
     }
     
     public function index(){       
+
+        
 
         $users=User::latest('id')->paginate(10);
         
@@ -40,6 +42,18 @@ class UserController extends Controller
 
     public function edit(User $user) : View{
 
+
+        $user = Auth::user();
+        if($user->hasRole('super-admin')){
+            $academias=Academia::query()->orderByRaw('academia')->get();
+        }else{
+            $academias = Academia::query()
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('users.id', $user->id);
+                })
+                ->orderByRaw('academia')->get();
+        }
+
         return view('users.edit',[
                         'usuario'=>$user,
                         'submitButtonText'=>'Actualizar Usuario',
@@ -49,7 +63,7 @@ class UserController extends Controller
                         'labelPassword'=>'Nueva contraseña (opcional)',
                         'labelPasswordConfirm'=>'Confirmar contraseña',
                         'academiasSeleccionadas'=>$user->academiasRelation->where('status',1)->pluck('id')->toArray(),
-                        'academias'=>Academia::query()->where('status',1)->orderByRaw('academia')->get(),
+                        'academias'=>$academias,
                         'rolesSeleccionados'=>$user->roles->pluck('id')->toArray(),
                         'roles'=>Role::query()->orderByRaw('name')->get()
         ]);
@@ -60,22 +74,22 @@ class UserController extends Controller
             
         $validated=($request->validated());
 
+
+
         //Modificamos el password solo si se ha modificado
         if($validated['password']!=null){
             $user->password =Hash::make($validated['password']);
         }else{
             unset($validated['password']);            
         }
-
-       // $user->password =Hash::make($validated['password']);        
+        
         $user->update($validated);
 
         $successMessages = ['Usuario actualizado con éxito.'];
-        session()->flash('success_messages', $successMessages);
-        //session()->flash('error_messages', ['Error.']);
+        session()->flash('success_messages', $successMessages);        
 
         //Sincronizamos los usuarios con las academias
-        $user->academias()->sync($request->input('academias', [])); // si no vienen, se limpia la relación
+        $user->academiasRelation()->sync($request->input('academias', [])); // si no vienen, se limpia la relación
         //Sincronizamos lo usuarios con los roles        
         $user->syncRoles($request->input('roles', []));        
         
@@ -85,7 +99,19 @@ class UserController extends Controller
 
 
     public function create():View{
-        // Creamos un nuevo usuario para el formulario     
+
+        $user = Auth::user();
+        if($user->hasRole('super-admin')){
+            $academias=Academia::query()->orderByRaw('academia')->get();
+        }else{
+            $academias = Academia::query()
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('users.id', $user->id);
+                })
+                ->orderByRaw('academia')->get();
+        }
+        
+        // Creamos un nuevo usuario para el formulario
         return view('users.create',[
             'usuario'=>new User,
             'submitButtonText'=>'Crear Usuario',
@@ -95,7 +121,7 @@ class UserController extends Controller
             'labelPassword'=>'Introduce contraseña *',
             'labelPasswordConfirm'=>'Confirmar Contraseña *',
             'academiasSeleccionadas'=>array(),
-            'academias'=>Academia::query()->where('status',1)->orderByRaw('academia')->get(),
+            'academias'=>$academias,
             'rolesSeleccionados'=>array(),
             'roles'=>Role::query()->orderByRaw('name')->get()
 

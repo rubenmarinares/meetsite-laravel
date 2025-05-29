@@ -62,6 +62,7 @@ Route::delete('permissions/{permission}',[PermissionController::class,'destroy']
 
 //ROUTES FOR ACADEMIAS
 Route::get('/academias', [AcademiaController::class, 'index'])->name('academias.index')->middleware('auth');
+Route::get('/academias/{academia}/view', [AcademiaController::class, 'view'])->name('academias.view')->middleware('auth');
 Route::get('academias/create',[AcademiaController::class,'create'])->name('academias.create')->middleware('auth');
 Route::post('academias',[AcademiaController::class,'store'])->name('academias.store')->middleware('auth');
 Route::get('academias/{academia}/edit',[AcademiaController::class,'edit'])->name('academias.edit')->middleware('auth');

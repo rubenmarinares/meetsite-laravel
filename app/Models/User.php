@@ -50,17 +50,13 @@ class User extends Authenticatable
 
 
 
-    public function academiasRelation()
-    {        
+    public function academiasRelation(){                
         return $this->belongsToMany(Academia::class, 'academias_users', 'userid', 'academiaid');
-
     }
 
     public function academias(){
         return $this->hasRole('super-admin') ? Academia::all() : $this->academiasRelation()->get();
-
     }
-
 
     public function roles()
     {

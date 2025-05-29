@@ -40,4 +40,16 @@ class Academia extends Model
         ];
     }
 
+
+    /*SOLO DEBERÍAMOS VER LOS USUARIOS DE NUESTRAS ACADEMIAS */
+    
+    public function users(){
+        return $this->belongsToMany(User::class,'academias_users','academiaid','userid');
+    }
+    
+
+    /*public function alumnos(){
+        return $this->belongsToMany(Alumno::class,'academias_alumnos','academiaid','alumnoid');
+    }*/
+
 }

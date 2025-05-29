@@ -20,23 +20,22 @@ class AcademiaController extends Controller
     {
         $this->authorizeResource(Academia::class);
     }
-        
+    
+    
+
     public function index():View{
 
         $user = Auth::user();
-        //$user = auth()->user();
+
+
         if($user->hasRole('super-admin')){
             $academias=Academia::query()->orderByRaw('academia')->get();
-        }else{
-            $academias=Academia::query()->orderByRaw('academia')->get();
-            /*
-            $academias = Academia::query()
+        }else{            
+             $academias = Academia::query()
                 ->whereHas('users', function ($query) use ($user) {
                     $query->where('users.id', $user->id);
                 })
-                ->orderByRaw('academia')
-                ->paginate(10);
-            */
+                ->orderByRaw('academia')->get();                                    
         }
 
         //MOSTRAR EL NÚMERO DE ALUMNOS QUE  TIENE CADA ACADEMIA
@@ -58,10 +57,17 @@ class AcademiaController extends Controller
     }
 
 
+    public function view(){
+
+        echo "view"; // Esto es solo para verificar que se llama al método
+
+    }
+
     
 
     public function create():View{
 
+        
         return view('academias.create',[
             'academia'=>new Academia,
             'submitButtonText'=>'crear_academia',
@@ -92,7 +98,7 @@ class AcademiaController extends Controller
         
     
     public function edit(Academia $academia) : View{
-        
+                        
         return view('academias.edit',[
                         'academia'=>$academia,
                         'submitButtonText'=>'actualizar_academia',
