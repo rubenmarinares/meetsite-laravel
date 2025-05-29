@@ -1,0 +1,35 @@
+Documentación:
+
+
+Base proyecto: https://www.youtube.com/watch?v=f9FKZE4C3vE
+
+Instalamos Fortify(paquete para la gestión de usuarios)
+    https://www.youtube.com/watch?v=5c9iJ3hWpk4
+
+Instalamos Spatie(gestión de roles y permisos)
+
+SPATIE (para permisos y roles) https://www.youtube.com/watch?v=nKtJEezp7WI
+
+
+
+
+CUANDO creamos el modelo tenemos que definier para que se va a utilizar y en la tabla de exportación
+tenemos que añadrile los campo que queremos que tengan
+php artisan make:model
+
+
+{{ dd($menuitems) }}
+@php dd($menuitems); @endphp
+
+
+
+Quiero crear un array de academias en session cuando el usuario se loguee por lo que voy a generar un controller:
+php artisan make:controller Auth/AuthenticatedSessionController
+
+Después implementamos el método store dentro del controller
+
+
+Y sobreescribimos la dirección de login de fortify
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware(['guest'])->name('login');
