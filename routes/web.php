@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AcademiaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProfesorController;
 
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
@@ -37,8 +38,11 @@ Route::get('users', [UserController::class, 'index'])->name('users.index')->midd
 Route::get('users/create',[UserController::class,'create'])->name('users.create')->middleware('auth');
 Route::post('users',[UserController::class,'store'])->name('users.store')->middleware('auth');
 Route::get('users/{user}/edit',[UserController::class,'edit'])->name('users.edit')->middleware('auth');
-Route::put('users/{user}',[UserController::class,'update'])->name('users.update')->middleware('auth');
 Route::delete('users/{user}',[UserController::class,'destroy'])->name('users.destroy')->middleware('auth'); 
+Route::put('users/{user}',[UserController::class,'update'])->name('users.update')->middleware('auth');
+/*Route::put('users/{user}', function (){
+    dd('Update alcanzado');
+})->name('users.update');*/
 
 
 //ROUTES FOR ROLES
@@ -68,3 +72,24 @@ Route::post('academias',[AcademiaController::class,'store'])->name('academias.st
 Route::get('academias/{academia}/edit',[AcademiaController::class,'edit'])->name('academias.edit')->middleware('auth');
 Route::put('academias/{academia}',[AcademiaController::class,'update'])->name('academias.update')->middleware('auth');
 Route::delete('academias/{academia}',[AcademiaController::class,'destroy'])->name('academias.destroy')->middleware('auth'); 
+
+
+//ROUTES FOR PROFESORES
+Route::get('/profesores', [ProfesorController::class, 'index'])->name('profesores.index')->middleware('auth');
+Route::get('/profesores/{profesor}/view', [ProfesorController::class, 'view'])->name('profesores.view')->middleware('auth');
+Route::get('profesores/create',[ProfesorController::class,'create'])->name('profesores.create')->middleware('auth');
+Route::post('profesores',[ProfesorController::class,'store'])->name('profesores.store')->middleware('auth');
+Route::get('profesores/{profesor}/edit',[ProfesorController::class,'edit'])->name('profesores.edit')->middleware('auth');
+Route::put('profesores/{profesor}',[ProfesorController::class,'update'])->name('profesores.update')->middleware('auth');
+Route::delete('profesores/{profesor}',[ProfesorController::class,'destroy'])->name('profesores.destroy')->middleware('auth'); 
+
+
+//ROUTES FOR ALUMNOS
+use App\Http\Controllers\AlumnoController;
+Route::get('/alumnos', [AlumnoController::class, 'index'])->name('alumnos.index')->middleware('auth');
+Route::get('/alumnos/{profesor}/view', [AlumnoController::class, 'view'])->name('alumnos.view')->middleware('auth');
+Route::get('alumnos/create',[AlumnoController::class,'create'])->name('alumnos.create')->middleware('auth');
+Route::post('alumnos',[AlumnoController::class,'store'])->name('alumnos.store')->middleware('auth');
+Route::get('alumnos/{alumno}/edit',[AlumnoController::class,'edit'])->name('alumnos.edit')->middleware('auth');
+Route::put('alumnos/{alumno}',[AlumnoController::class,'update'])->name('alumnos.update')->middleware('auth');
+Route::delete('alumnos/{alumno}',[AlumnoController::class,'destroy'])->name('alumnos.destroy')->middleware('auth'); 

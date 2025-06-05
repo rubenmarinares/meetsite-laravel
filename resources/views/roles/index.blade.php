@@ -24,7 +24,7 @@
         </div>
         
         <div class="card-table table-responsive mt-2">            
-        @if($roles)
+        @if( $roles->isNotEmpty() )
         <table id="tablelist" class="table table-striped table-bordered dataTable">
             <thead>
                     <tr>

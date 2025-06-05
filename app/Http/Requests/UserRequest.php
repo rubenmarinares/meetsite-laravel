@@ -27,9 +27,11 @@ class UserRequest extends FormRequest
         $isCreating = request()->isMethod('post');
         // If the request is for creating a new user, 'required' is needed for password
 
-         $user = auth()->user();
+         $userAuth = auth()->user();
 
-        $isNotSuperAdmin = !$user || !$user->hasRole('super-admin');
+        $isNotSuperAdmin = !$userAuth || !$userAuth->hasRole('super-admin');
+
+        
 
         return [
             'name' => ['required','string','max:255'],
@@ -38,9 +40,9 @@ class UserRequest extends FormRequest
                             $isCreating ? 'required' : 'nullable',
                             'confirmed', Password::defaults()],
             'roles' => [Rule::requiredIf($isNotSuperAdmin), 'array'],
-            'roles.*' => ['exists:roles,id'],
+            //'roles.*' => ['exists:roles,id'],
             'academias' => [Rule::requiredIf($isNotSuperAdmin), 'array'],
-            'academias.*' => ['exists:academias,id'],
+            //'academias.*' => ['exists:academias,id'],
         ];
     }
 

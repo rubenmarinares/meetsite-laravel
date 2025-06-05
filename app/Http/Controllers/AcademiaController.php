@@ -81,24 +81,9 @@ class AcademiaController extends Controller
         ]);
 
     }
-    public function store(AcademiaRequest $request): RedirectResponse{
-        
-        $validated=($request->validated());
-        if (!isset($validated['completed'])) {
-            $validated['completed'] = 0;
-        }
-
-        $validated["properties"]=json_encode($validated["properties"]);
-
-        $academia=Academia::create($validated);        
-        //Sincronizamos los alumnos de la academia
-        //$academia->alumnos()->sync($request->input('alumnos', [])); // si no vienen, se limpia la relación
-        return redirect()->route('academias.index');
-    }
-        
     
     public function edit(Academia $academia) : View{
-                        
+        
         return view('academias.edit',[
                         'academia'=>$academia,
                         'submitButtonText'=>'actualizar_academia',
@@ -108,34 +93,34 @@ class AcademiaController extends Controller
                         'tipos' => Academia::tipos(),
                         //'alumnosSeleccionados'=>$academia->alumnos->pluck('id')->toArray(),
                         //'alumnos'=>Alumno::query()->orderByRaw('apellidos')->get(),
-
-        ]);
-    }
-
-    public function update(AcademiaRequest $request,Academia $academia):RedirectResponse{
+                        
+                    ]);
+                }
                 
-        try {
-            DB::beginTransaction();
-
-            $validated = $request->validated();
-            if (!isset($validated['completed'])) {
+                public function update(AcademiaRequest $request,Academia $academia):RedirectResponse{
+                    
+                    try {
+                        DB::beginTransaction();
+                        
+                        $validated = $request->validated();
+                        if (!isset($validated['completed'])) {
                 $validated['completed'] = 0;
             }
 
             $validated["properties"] = json_encode($validated["properties"]);
             $academia->update($validated);
-
+            
             //Sincronizamos los alumnos de la academia
             //$academia->alumnos()->sync($request->input('alumnos', [])); // si no vienen, se limpia la relación
             //throw new \Exception('Error forzado'); // Esto sí entra al catch
-
+            
             DB::commit();
-
+            
             session()->flash('success_messages', [__('academia.messages.success')]);
-
+            
         } catch (\Exception $e) {
             DB::rollBack(); // Revierte todo
-
+            
             session()->flash('error_messages', [
                 __('academia.messages.error'),
                 $e->getMessage()
@@ -146,7 +131,32 @@ class AcademiaController extends Controller
         
         
     }
-                
+    
+    public function store(AcademiaRequest $request): RedirectResponse{
+        
+        $validated=($request->validated());
+        if (!isset($validated['completed'])) {
+            $validated['completed'] = 0;
+        }
+
+        $validated["properties"]=json_encode($validated["properties"]);
+
+
+
+        $academia=Academia::create($validated);
+
+        //AHORA si el usuario es admin le asignamos la academia
+        $userAuth = Auth::user();
+        if($userAuth->hasRole('admin')){
+            $academia->users()->attach($userAuth->id);  
+        }
+
+
+        //Sincronizamos los alumnos de la academia
+        //$academia->alumnos()->sync($request->input('alumnos', [])); // si no vienen, se limpia la relación
+        return redirect()->route('academias.index');
+        }
+        
     public function destroy(Academia $academia):RedirectResponse{
         $academia->delete();
         return redirect()->route('academias.index');

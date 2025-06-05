@@ -2,6 +2,15 @@
     @csrf
     @method($method)
 
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     <div class="row mb-3 mt-3">
         <div class="col-md-6">
             <label for="name" class="form-label">Nombre *</label>

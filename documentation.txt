@@ -33,3 +33,6 @@ Y sobreescribimos la dirección de login de fortify
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware(['guest'])->name('login');
+
+
+php artisan db:seed

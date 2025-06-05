@@ -24,7 +24,7 @@
         </div>
         
         <div class="card-table table-responsive mt-2">            
-        @if($academias)
+        @if( $academias->isNotEmpty() )
         <table id="tablelist" class="table table-striped table-bordered dataTable">
             <thead>
                     <tr>
@@ -91,13 +91,15 @@
             </div>                    
             <!--FIN MODAL CONFIRMACIÓN-->
             <script>
-                function openDeleteModal(academia) {                                                
+                function openDeleteModal(academia) { 
+                    console.log("academia",academia)                                         
+                    console.log("academiaid",academia.id)
                     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
                     const form = document.getElementById('deleteForm');                                                
                     modal.show();
-                    form.action = `/academias/${user.id}`; // Asegurate de que la ruta coincida con la definida en web.php    
-                    modal.classList.remove('hidden');
-                    modal.classList.add('flex');
+                    form.action = `/academias/${academia.id}`; // Asegurate de que la ruta coincida con la definida en web.php    
+                    //modal.classList.remove('hidden');
+                    //modal.classList.add('flex');
                 }                        
             </script>
             @else

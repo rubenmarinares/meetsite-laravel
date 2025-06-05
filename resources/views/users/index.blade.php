@@ -25,13 +25,14 @@
 
         <div class="card-table table-responsive mt-2">
 
-        @if($users)
+        @if( $users->isNotEmpty() )
         <table id="tablelist" class="table table-striped table-bordered dataTable">
             <thead>
                     <tr>                                
                         <th scope="col" class="px-6 py-3">Action</th>
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">email</th>
+                        <th scope="col" class="px-6 py-3">Academias</th>
                         <th scope="col" class="px-6 py-3">Creado</th>
                     </tr>
                 </thead>
@@ -50,6 +51,11 @@
                         </td>
                         <td>{{$user->name}}</td>
                         <td>{{$user->email}}</td>
+                        <td> @foreach ($user->academiasRelation as $academia)
+                                {{ $academia->academia }}
+                                @if (!$loop->last), @endif
+                                @endforeach
+                        </td> 
                         <td>{{$user->created_at->format('d/m/Y') }}</td>                                
                     </tr>
                     @empty
@@ -57,9 +63,7 @@
                     @endforelse
                 </tbody>
             </table>
-            <div class="p-4">
-                {{$users->links()}}
-            </div>  
+              
             <!-- Modal de confirmación -->
             <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

@@ -36,17 +36,42 @@ class Academia extends Model
     {
         return [
             'capacidad' => '',
-            'tipo' => ''            
+            'tipo' => ''
         ];
     }
 
 
     /*SOLO DEBERÍAMOS VER LOS USUARIOS DE NUESTRAS ACADEMIAS */
-    
     public function users(){
         return $this->belongsToMany(User::class,'academias_users','academiaid','userid');
     }
+
+    public function profesores(){
+        return $this->belongsToMany(Profesor::class,'academias_profesores','academiaid','profesorid');
+    }
     
+
+    public function alumnos(){
+        return $this->belongsToMany(Alumno::class,'academias_alumnos','academiaid','alumnoid');
+    }
+
+
+    //Para eliminar una academia, eliminamos la relación con los usuarios
+    protected static function boot(){
+        parent::boot();
+        static::deleting(function ($academia) {
+            $academia->users()->detach();
+        });
+        //DEspues de eliminar una academia, eliminamos la relación con los profesores
+        static::deleting(function ($academia) {
+            $academia->profesores()->detach();
+        });
+
+        static::deleting(function ($academia) {
+            $academia->alumnos()->detach();
+        });
+    }
+
 
     /*public function alumnos(){
         return $this->belongsToMany(Alumno::class,'academias_alumnos','academiaid','alumnoid');

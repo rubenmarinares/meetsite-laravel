@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Academia;
+
 use App\Models\Role;
 use Illuminate\Http\Request;
 
@@ -27,29 +28,40 @@ class UserController extends Controller
 
         
 
-        $users=User::latest('id')->paginate(10);
+
+        $user = Auth::user();
+
+        if($user->hasRole('super-admin')){
+            $usuarios=User::query()->orderByRaw('name')->get();
+        }else{                            
+            $usuarios = User::whereHas('academiasRelation', function ($query) use ($user) {
+                            $query->whereIn('academiaid', $user->academias()->pluck('id'));
+                        })->get();                                        
+        }        
         
         return view('users.index',[
-            'users'=>$users,
+            'users'=>$usuarios,
             'h2Label'=>'Usuarios',
             'createUrl'=>route('users.create'),
             'createLabel'=>'Nuevo Usuario',
             'emptyMessage'=>'No hay usuarios registrados',
-            'totalRegistros'=>$users->total(),
+            'totalRegistros'=>$usuarios->count(),
         ]); 
 
     }
 
-    public function edit(User $user) : View{
+    public function edit(User $user) : View{        
+        
 
+        
 
-        $user = Auth::user();
-        if($user->hasRole('super-admin')){
+        $userAuth = Auth::user();
+        if($userAuth->hasRole('super-admin')){
             $academias=Academia::query()->orderByRaw('academia')->get();
         }else{
             $academias = Academia::query()
-                ->whereHas('users', function ($query) use ($user) {
-                    $query->where('users.id', $user->id);
+                ->whereHas('users', function ($query) use ($userAuth) {
+                    $query->where('users.id', $userAuth->id);
                 })
                 ->orderByRaw('academia')->get();
         }
@@ -62,20 +74,22 @@ class UserController extends Controller
                         'h2Label'=>'Editar Usuario',
                         'labelPassword'=>'Nueva contraseña (opcional)',
                         'labelPasswordConfirm'=>'Confirmar contraseña',
-                        'academiasSeleccionadas'=>$user->academiasRelation->where('status',1)->pluck('id')->toArray(),
+                        'academiasSeleccionadas'=>$user->academiasRelation->pluck('id')->toArray(),
                         'academias'=>$academias,
                         'rolesSeleccionados'=>$user->roles->pluck('id')->toArray(),
                         'roles'=>Role::query()->orderByRaw('name')->get()
         ]);
+
+
     }
 
 
     public function update(UserRequest $request,User $user):RedirectResponse{
-            
+       
+
         $validated=($request->validated());
-
-
-
+        
+        
         //Modificamos el password solo si se ha modificado
         if($validated['password']!=null){
             $user->password =Hash::make($validated['password']);

@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 
 
-
-
-
-
-
 class AuthenticatedSessionController extends Controller
 {
 
