@@ -7,6 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
+
+
 class AlumnoRequest extends FormRequest
 {
     /**
@@ -25,8 +27,8 @@ class AlumnoRequest extends FormRequest
     public function rules(): array
     {
                   
-        $user = Auth::user();
         //$user = auth()->user();
+        $user = Auth::user();
 
         $alumno = $this->route('alumno');
 
