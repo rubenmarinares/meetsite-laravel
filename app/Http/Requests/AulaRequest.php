@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 
-class AsignaturaRequest extends FormRequest
+class AulaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,10 +34,10 @@ class AsignaturaRequest extends FormRequest
 
         $isNotSuperAdmin = !$user || !$user->hasRole('super-admin');
         return [
-            'asignatura' => ['required','string','max:200'],            
-            'descripcion' => ['nullable','string','max:500'],            
+            'aula' => ['required','string','max:200'],                        
             'academias' => [Rule::requiredIf($isNotSuperAdmin), 'array'],
             'academias.*' => ['exists:academias,id'],
+            'properties.capacidad'=>['required','integer'],            
         ];
     }
 
@@ -50,6 +50,9 @@ class AsignaturaRequest extends FormRequest
             'academias.required'=>'El campo academias es obligatorio',
             'academias.array'=>'El campo academias debe ser un array',
             'descripcion.max'=>'El campo descripción no debe superar los :max caracteres',
+            'properties.capacidad.required'=>"El campo capacidad es obligatorio",
+            'properties.capacidad.integer'=>"El campo capacidad debe ser un número entero",
+            'properties.capacidad.min'=>"El campo capacidad debe ser mayor que 0",            
         ];
     }
 }

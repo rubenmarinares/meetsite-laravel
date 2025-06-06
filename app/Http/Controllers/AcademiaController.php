@@ -97,13 +97,13 @@ class AcademiaController extends Controller
                     ]);
                 }
                 
-                public function update(AcademiaRequest $request,Academia $academia):RedirectResponse{
+    public function update(AcademiaRequest $request,Academia $academia):RedirectResponse{
                     
-                    try {
-                        DB::beginTransaction();
-                        
-                        $validated = $request->validated();
-                        if (!isset($validated['completed'])) {
+        try {
+            DB::beginTransaction();
+            
+            $validated = $request->validated();
+            if (!isset($validated['completed'])) {
                 $validated['completed'] = 0;
             }
 

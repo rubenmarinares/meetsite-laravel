@@ -55,26 +55,28 @@ class Academia extends Model
         return $this->belongsToMany(Alumno::class,'academias_alumnos','academiaid','alumnoid');
     }
 
+    public function asignaturas(){
+        return $this->belongsToMany(Asignatura::class,'academias_asignaturas','academiaid','asignaturaid');
+    }
+
+    public function aulas(){
+        return $this->belongsToMany(Aula::class,'academias_aulas','academiaid','aulaid');
+    }
+
 
     //Para eliminar una academia, eliminamos la relación con los usuarios
     protected static function boot(){
         parent::boot();
         static::deleting(function ($academia) {
             $academia->users()->detach();
-        });
-        //DEspues de eliminar una academia, eliminamos la relación con los profesores
-        static::deleting(function ($academia) {
             $academia->profesores()->detach();
-        });
-
-        static::deleting(function ($academia) {
             $academia->alumnos()->detach();
+            $academia->asignaturas()->detach();
+            $academia->aulas()->detach();
         });
+        
     }
 
 
-    /*public function alumnos(){
-        return $this->belongsToMany(Alumno::class,'academias_alumnos','academiaid','alumnoid');
-    }*/
 
 }

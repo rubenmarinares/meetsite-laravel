@@ -58,13 +58,18 @@ class UserController extends Controller
         $userAuth = Auth::user();
         if($userAuth->hasRole('super-admin')){
             $academias=Academia::query()->orderByRaw('academia')->get();
+            $roles=Role::query()->orderByRaw('name')->get();
         }else{
             $academias = Academia::query()
                 ->whereHas('users', function ($query) use ($userAuth) {
                     $query->where('users.id', $userAuth->id);
                 })
                 ->orderByRaw('academia')->get();
+            $roles = Role::query()->where('id', '!=', 1) // Exclude 'super-admin' role
+                ->orderByRaw('name')->get();
         }
+
+
 
         return view('users.edit',[
                         'usuario'=>$user,
@@ -77,7 +82,7 @@ class UserController extends Controller
                         'academiasSeleccionadas'=>$user->academiasRelation->pluck('id')->toArray(),
                         'academias'=>$academias,
                         'rolesSeleccionados'=>$user->roles->pluck('id')->toArray(),
-                        'roles'=>Role::query()->orderByRaw('name')->get()
+                        'roles'=>$roles
         ]);
 
 
@@ -88,7 +93,6 @@ class UserController extends Controller
        
 
         $validated=($request->validated());
-        
         
         //Modificamos el password solo si se ha modificado
         if($validated['password']!=null){
@@ -117,12 +121,15 @@ class UserController extends Controller
         $user = Auth::user();
         if($user->hasRole('super-admin')){
             $academias=Academia::query()->orderByRaw('academia')->get();
+            $roles=Role::query()->orderByRaw('name')->get();
         }else{
             $academias = Academia::query()
                 ->whereHas('users', function ($query) use ($user) {
                     $query->where('users.id', $user->id);
                 })
                 ->orderByRaw('academia')->get();
+            $roles = Role::query()->where('id', '!=', 1) // Exclude 'super-admin' role
+                ->orderByRaw('name')->get();
         }
         
         // Creamos un nuevo usuario para el formulario
@@ -137,7 +144,7 @@ class UserController extends Controller
             'academiasSeleccionadas'=>array(),
             'academias'=>$academias,
             'rolesSeleccionados'=>array(),
-            'roles'=>Role::query()->orderByRaw('name')->get()
+            'roles'=>$roles
 
         ]);
     }

@@ -103,3 +103,14 @@ Route::post('asignaturas',[AsignaturaController::class,'store'])->name('asignatu
 Route::get('asignaturas/{asignatura}/edit',[AsignaturaController::class,'edit'])->name('asignaturas.edit')->middleware('auth');
 Route::put('asignaturas/{asignatura}',[AsignaturaController::class,'update'])->name('asignaturas.update')->middleware('auth');
 Route::delete('asignaturas/{asignatura}',[AsignaturaController::class,'destroy'])->name('asignaturas.destroy')->middleware('auth'); 
+
+
+//ROUTES FOR Aulas
+use App\Http\Controllers\AulaController;
+Route::get('/aulas', [AulaController::class, 'index'])->name('aulas.index')->middleware('auth');
+Route::get('/aulas/{aula}/view', [AulaController::class, 'view'])->name('aulas.view')->middleware('auth');
+Route::get('aulas/create',[AulaController::class,'create'])->name('aulas.create')->middleware('auth');
+Route::post('aulas',[AulaController::class,'store'])->name('aulas.store')->middleware('auth');
+Route::get('aulas/{aula}/edit',[AulaController::class,'edit'])->name('aulas.edit')->middleware('auth');
+Route::put('aulas/{aula}',[AulaController::class,'update'])->name('aulas.update')->middleware('auth');
+Route::delete('aulas/{aula}',[AulaController::class,'destroy'])->name('aulas.destroy')->middleware('auth'); 

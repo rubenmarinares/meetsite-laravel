@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
         */
 
         $this->call([
-            AsignaturaSeeder::class,
+            AulaSeeder::class,
+            //AsignaturaSeeder::class,
             //AlumnoSeeder::class,
             //AcademiaSeeder::class,
             //ProfesorSeeder::class,

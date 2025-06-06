@@ -36,3 +36,6 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middlew
 
 
 php artisan db:seed
+
+Generar tabla pivot:
+php artisan make:migration create_role_user_table
