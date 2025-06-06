@@ -4,16 +4,16 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Asignatura;
 
-use App\Models\Profesor;
-class ProfesorSeeder extends Seeder
+
+class AsignaturaSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        //
-        Profesor::factory(count:20)->create();
+        Asignatura::factory(count:20)->create();
     }
 }

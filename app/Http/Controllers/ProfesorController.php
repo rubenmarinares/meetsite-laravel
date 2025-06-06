@@ -122,7 +122,7 @@ class ProfesorController extends Controller
                         'actionUrl'=>route('profesores.update',$profesor),  
                         'method'=>'PUT',
                         'h2Label'=>'Editar Profesor',                        
-                        'academiasSeleccionadas'=>$profesor->academiasRelation->where('status',1)->pluck('id')->toArray(),
+                        'academiasSeleccionadas'=>$profesor->academiasRelation->pluck('id')->toArray(),
                         'academias'=>$academias,                        
         ]);
     }

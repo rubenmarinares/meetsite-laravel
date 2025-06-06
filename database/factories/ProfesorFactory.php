@@ -18,7 +18,7 @@ class ProfesorFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = FakerFactory::create('es_ES');        
+        $faker = FakerFactory::create('es_ES');
 
         
        return [

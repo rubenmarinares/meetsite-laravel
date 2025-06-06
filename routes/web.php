@@ -93,3 +93,13 @@ Route::post('alumnos',[AlumnoController::class,'store'])->name('alumnos.store')-
 Route::get('alumnos/{alumno}/edit',[AlumnoController::class,'edit'])->name('alumnos.edit')->middleware('auth');
 Route::put('alumnos/{alumno}',[AlumnoController::class,'update'])->name('alumnos.update')->middleware('auth');
 Route::delete('alumnos/{alumno}',[AlumnoController::class,'destroy'])->name('alumnos.destroy')->middleware('auth'); 
+
+//ROUTES FOR ASIGNATURAS
+use App\Http\Controllers\AsignaturaController;
+Route::get('/asignaturas', [AsignaturaController::class, 'index'])->name('asignaturas.index')->middleware('auth');
+Route::get('/asignaturas/{asignatura}/view', [AsignaturaController::class, 'view'])->name('asignaturas.view')->middleware('auth');
+Route::get('asignaturas/create',[AsignaturaController::class,'create'])->name('asignaturas.create')->middleware('auth');
+Route::post('asignaturas',[AsignaturaController::class,'store'])->name('asignaturas.store')->middleware('auth');
+Route::get('asignaturas/{asignatura}/edit',[AsignaturaController::class,'edit'])->name('asignaturas.edit')->middleware('auth');
+Route::put('asignaturas/{asignatura}',[AsignaturaController::class,'update'])->name('asignaturas.update')->middleware('auth');
+Route::delete('asignaturas/{asignatura}',[AsignaturaController::class,'destroy'])->name('asignaturas.destroy')->middleware('auth'); 
