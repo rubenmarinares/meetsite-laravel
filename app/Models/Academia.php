@@ -63,6 +63,10 @@ class Academia extends Model
         return $this->belongsToMany(Aula::class,'academias_aulas','academiaid','aulaid');
     }
 
+    public function clientes(){
+        return $this->belongsToMany(Aula::class,'academias_clientes','academiaid','clienteid');
+    }
+
 
     //Para eliminar una academia, eliminamos la relación con los usuarios
     protected static function boot(){
@@ -73,6 +77,7 @@ class Academia extends Model
             $academia->alumnos()->detach();
             $academia->asignaturas()->detach();
             $academia->aulas()->detach();
+            $academia->clientes()->detach();
         });
         
     }

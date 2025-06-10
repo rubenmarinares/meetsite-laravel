@@ -114,3 +114,15 @@ Route::post('aulas',[AulaController::class,'store'])->name('aulas.store')->middl
 Route::get('aulas/{aula}/edit',[AulaController::class,'edit'])->name('aulas.edit')->middleware('auth');
 Route::put('aulas/{aula}',[AulaController::class,'update'])->name('aulas.update')->middleware('auth');
 Route::delete('aulas/{aula}',[AulaController::class,'destroy'])->name('aulas.destroy')->middleware('auth'); 
+
+
+
+//ROUTES FOR Clientes
+use App\Http\Controllers\ClienteController;
+Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index')->middleware('auth');
+Route::get('/clientes/{cliente}/view', [ClienteController::class, 'view'])->name('clientes.view')->middleware('auth');
+Route::get('clientes/create',[ClienteController::class,'create'])->name('clientes.create')->middleware('auth');
+Route::post('clientes',[ClienteController::class,'store'])->name('clientes.store')->middleware('auth');
+Route::get('clientes/{cliente}/edit',[ClienteController::class,'edit'])->name('clientes.edit')->middleware('auth');
+Route::put('clientes/{cliente}',[ClienteController::class,'update'])->name('clientes.update')->middleware('auth');
+Route::delete('clientes/{cliente}',[ClienteController::class,'destroy'])->name('clientes.destroy')->middleware('auth'); 
