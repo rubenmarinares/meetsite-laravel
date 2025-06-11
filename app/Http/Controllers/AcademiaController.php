@@ -57,9 +57,22 @@ class AcademiaController extends Controller
     }
 
 
-    public function view(){
+    public function setAcademia($id){
 
-        echo "view"; // Esto es solo para verificar que se llama al método
+        $user = Auth::user();
+        
+        $academia = Academia::find($id);
+        //var_export($academia);        
+        if($academia){
+            session()->put('academia_set', $academia);
+        }        
+        $academias = $user->academias();
+        session()->put('user_academias', $academias);
+
+        session()->flash('success_messages', ['Academia seleccionada correctamente.']);
+
+        return redirect()->route('home');
+        
 
     }
 
@@ -100,6 +113,8 @@ class AcademiaController extends Controller
     public function update(AcademiaRequest $request,Academia $academia):RedirectResponse{
                     
         try {
+
+            
             DB::beginTransaction();
             
             $validated = $request->validated();
@@ -113,6 +128,14 @@ class AcademiaController extends Controller
             //Sincronizamos los alumnos de la academia
             //$academia->alumnos()->sync($request->input('alumnos', [])); // si no vienen, se limpia la relación
             //throw new \Exception('Error forzado'); // Esto sí entra al catch
+
+            //Actualizamos desplegable
+            $user = Auth::user();
+            $academias = $user->academias();
+            session()->put('user_academias', $academias);
+            if(session('academia_set')->id==$academia->id){
+                session()->put('academia_set', $academia);
+            }
             
             DB::commit();
             
@@ -154,6 +177,14 @@ class AcademiaController extends Controller
 
         //Sincronizamos los alumnos de la academia
         //$academia->alumnos()->sync($request->input('alumnos', [])); // si no vienen, se limpia la relación
+
+
+        //Actualizamos desplegable academias
+        $user = Auth::user();
+        $academias = $user->academias();
+        session()->put('user_academias', $academias);
+        
+
         return redirect()->route('academias.index');
         }
         

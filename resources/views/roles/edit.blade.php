@@ -2,7 +2,7 @@
 
     @php
         $imenu1 = 2;
-        $imenu2 = 8;
+        $imenu2 = 6;
     @endphp
     
     <x-slot name="sidemenu">
@@ -16,9 +16,9 @@
 
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center justify-content-between">
-            <h4 class="card-title"><i class="fas fa-school"></i>&nbsp;Edición Role</h4>
+            <h4 class="card-title"><i class="{{$menuitems[$imenu1]['submenu'][$imenu2]['icon']}}"></i>&nbsp;Edición {{$menuitems[$imenu1]['submenu'][$imenu2]['label']}}</h4>
             <div class="card-header-action">
-                <a href="{{route('roles.create')}}" class="btn btn-sm btn-primary ajax-sidepanel"><i class="fa fa-users"></i>&nbsp;Nuevo</a>
+                <a href="{{route('roles.index')}}" class="btn btn-sm btn-outline-danger ajax-sidepanel"><i class="fa-solid fa-ban"></i>&nbsp;Cancelar</a>
             </div>
         </div>
 

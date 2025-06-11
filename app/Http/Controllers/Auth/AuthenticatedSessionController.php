@@ -34,9 +34,13 @@ class AuthenticatedSessionController extends Controller
             $user = Auth::user();
 
             $academias = $user->academias();
-            session()->put('user_academias', $academias);            
+            session()->put('user_academias', $academias);
 
-              $successMessages = [            
+            if($academias->count() > 0){
+                session()->put('academia_set', $academias->first());
+            }
+
+            $successMessages = [            
                 'Credenciales correctas.'
             ];        
             session()->flash('success_messages', $successMessages);

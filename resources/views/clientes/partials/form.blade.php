@@ -36,9 +36,7 @@
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
         </div>
-    </div>
-    
-    <div class="row mb-3 mt-3">        
+
         <!--ACADEMIAS RELATED-->
         <div class="col-md-6">
             <label for="academias" class="form-label">Academias </label>
@@ -53,13 +51,17 @@
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror            
         </div>
+    </div>
+    
+    <div class="row mb-3 mt-3">        
+        
 
         <!--ALUMNOS SELECCIONADOS-->      
         <div class="col-md-6">
             <label for="alumnos" class="form-label">Alumnos asociados </label>
             <select name="alumnos[]" id="alumnos" multiple  class="form-control select2" style="height:47px !important;">
                 @foreach ($alumnosSelected as $alumno)
-                <option value="{{ $alumno->id }}" {{ $alumno->clienteid==$cliente->id ?  'selected' : '' }}>
+                <option value="{{ $alumno->id }}" {{ !empty($alumno->clienteid) && $alumno->clienteid==$cliente->id ?  'selected' : '' }}>
                     {{ $alumno->nombre }} {{ $alumno->apellidos }} 
                 </option>
                 @endforeach
@@ -68,6 +70,8 @@
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror            
         </div>
+
+        
     </div>
     
     <div class="d-flex justify-content-end">

@@ -38,7 +38,7 @@ class ViewServiceProvider extends ServiceProvider
                     2=> [ 'label'=> 'Administración', 'icon'=> 'fas fa-cogs', 'url'=> 'admin' 
                         ,'submenu'=> [
                             0=> ['label'=> 'Academias', 'icon'=> 'fas fa-school', 'url'=> 'academias' ],
-                            1=> ['label'=> 'Profesores', 'icon'=> 'fa-solid fa-chalkboard-user', 'url'=> 'profesores' ],
+                            1=> ['label'=> 'Profesores', 'icon'=> 'fa-solid fa-person-chalkboard', 'url'=> 'profesores' ],
                             2=> ['label'=> 'Alumnos', 'icon'=> 'fa-solid fa-graduation-cap', 'url'=> 'alumnos' ],
                             3=> ['label'=> 'Asignaturas', 'icon'=> 'fa-solid fa-book-bookmark', 'url'=> 'asignaturas' ],
                             4=> ['label'=> 'Aulas', 'icon'=> 'fa-solid fa-chalkboard-user', 'url'=> 'aulas' ],
@@ -74,7 +74,7 @@ class ViewServiceProvider extends ServiceProvider
                     2=> [ 'label'=> 'Administración', 'icon'=> 'fas fa-cogs', 'url'=> 'admin' 
                         ,'submenu'=> [
                             0=> ['label'=> 'Academias', 'icon'=> 'fas fa-school', 'url'=> 'academias' ],
-                            1=> ['label'=> 'Profesores', 'icon'=> 'fa-solid fa-chalkboard-user', 'url'=> 'profesores' ],
+                            1=> ['label'=> 'Profesores', 'icon'=> 'fa-solid fa-person-chalkboard', 'url'=> 'profesores' ],
                             2=> ['label'=> 'Alumnos', 'icon'=> 'fa-solid fa-graduation-cap', 'url'=> 'alumnos' ],
                             3=> ['label'=> 'Asignaturas', 'icon'=> 'fa-solid fa-book-bookmark', 'url'=> 'asignaturas' ],
                             4=> ['label'=> 'Aulas', 'icon'=> 'fa-solid fa-chalkboard-user', 'url'=> 'aulas' ],

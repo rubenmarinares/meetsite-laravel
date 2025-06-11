@@ -32,6 +32,9 @@
         </ul>
       </div>
       <!-- [Mobile Media Block end] -->
+       @php
+        $academias = session('user_academias');
+      @endphp
       <div class="ms-auto">
         <ul class="list-unstyled">
   
@@ -39,11 +42,21 @@
               <a class="pc-head-link dropdown-toggle arrow-none me-0 select-academia" 
               data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"
               >
-             Academia
+                {{ session('academia_set')->academia }} 
+                
               </a>
-              <div class="dropdown-menu dropdown-menu-end pc-h-dropdown lng-dropdown">        
-        
-                    <a href="" class="dropdown-item" data-lng=""><span>nombre academias</span></a>
+              <!--<div class="dropdown-menu dropdown-menu-end pc-h-dropdown lng-dropdown">-->
+                <div class="dropdown-menu dropdown-menu-end pc-h-dropdown lng-dropdown " 
+                style="max-height: 90vh; overflow-y: auto; position: absolute; inset: 0px 0px auto auto; 
+                margin: 0px; transform: translate(0px, 61px);" >
+                    @foreach($academias as $academia)      
+                      <form action="{{ route('academia.set', $academia->id) }}" method="POST"> 
+                         @csrf               
+                          <button type="submit" class="dropdown-item" ><span>{{ $academia->academia }}</span></button>
+                      </form>
+
+
+                    @endforeach
                 
               </div>
           </li>

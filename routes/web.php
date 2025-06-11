@@ -21,7 +21,9 @@ Route::get('/', function () {
 });
 
 
-Route::get('home', function () {return view('home');})->name('home')->middleware('auth');
+//Route::get('home', function () {return view('home');})->name('home')->middleware('auth');
+use App\Http\Controllers\HomeController;
+Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
 //FORTIFY PASSWORD
 Route::get('/login', fn() => view('auth.login'))->name('login');
@@ -72,6 +74,7 @@ Route::post('academias',[AcademiaController::class,'store'])->name('academias.st
 Route::get('academias/{academia}/edit',[AcademiaController::class,'edit'])->name('academias.edit')->middleware('auth');
 Route::put('academias/{academia}',[AcademiaController::class,'update'])->name('academias.update')->middleware('auth');
 Route::delete('academias/{academia}',[AcademiaController::class,'destroy'])->name('academias.destroy')->middleware('auth'); 
+Route::post('/academias/set/{id}', [AcademiaController::class, 'setAcademia'])->name('academia.set')->middleware('auth'); ;
 
 
 //ROUTES FOR PROFESORES

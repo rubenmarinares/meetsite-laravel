@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\DB;
+
 
 class UserController extends Controller
 {
@@ -25,14 +27,12 @@ class UserController extends Controller
     }
     
     public function index(){       
-
         
-
-
         $user = Auth::user();
-
         if($user->hasRole('super-admin')){
+            
             $usuarios=User::query()->orderByRaw('name')->get();
+
         }else{                            
             $usuarios = User::whereHas('academiasRelation', function ($query) use ($user) {
                             $query->whereIn('academiaid', $user->academias()->pluck('id'));
@@ -91,26 +91,32 @@ class UserController extends Controller
 
     public function update(UserRequest $request,User $user):RedirectResponse{
        
+         try {
+            DB::beginTransaction();
 
-        $validated=($request->validated());
-        
-        //Modificamos el password solo si se ha modificado
-        if($validated['password']!=null){
-            $user->password =Hash::make($validated['password']);
-        }else{
-            unset($validated['password']);            
-        }
-        
-        $user->update($validated);
+            $validated=($request->validated());
+            //Modificamos el password solo si se ha modificado
+            if($validated['password']!=null){
+                $user->password =Hash::make($validated['password']);
+            }else{
+                unset($validated['password']);            
+            }            
+            $user->update($validated);
 
-        $successMessages = ['Usuario actualizado con éxito.'];
-        session()->flash('success_messages', $successMessages);        
+            //Sincronizamos los usuarios con las academias
+            $user->academiasRelation()->sync($request['academias'] ?? []); // si no vienen, se limpia la relación
+            $user->syncRoles($request['roles'] ?? []);       
+            DB::commit(); // Confirma los cambios
 
-        //Sincronizamos los usuarios con las academias
-        $user->academiasRelation()->sync($request->input('academias', [])); // si no vienen, se limpia la relación
-        //Sincronizamos lo usuarios con los roles        
-        $user->syncRoles($request->input('roles', []));        
-        
+            $successMessages = ['Usuario actualizado con éxito.'];
+            session()->flash('success_messages', $successMessages);        
+        } catch (\Exception $e) {
+            DB::rollBack(); // Revierte todo
+            session()->flash('error_messages', [
+                "Error al actualizar el usuario.",
+                $e->getMessage()
+            ]);
+        }    
 
         return redirect()->route('users.index');
     }
@@ -150,17 +156,34 @@ class UserController extends Controller
     }
           
     public function store(UserRequest $request): RedirectResponse{
-        $validated=($request->validated());
-        
-        $validated['password'] = Hash::make($validated['password']);
-        $user=User::create($validated);
-        $successMessages = [            
-            'Usuario creado con éxito.'
-        ];    
-        session()->flash('success_messages', $successMessages);
 
-        $user->academias()->sync($request->input('academias', [])); // si no vienen, se limpia la relación
-        $user->syncRoles($request->input('roles', []));
+        try {
+            DB::beginTransaction();
+
+            $validated=($request->validated());
+            
+            $validated['password'] = Hash::make($validated['password']);
+            $user=User::create($validated);
+            
+
+            //$user->academias()->sync($request['academias'] ?? []); // si no vienen, se limpia la relación
+            
+            $user->academiasRelation()->sync($request['academias'] ?? []); // si no vienen, se limpia la relación
+            $user->syncRoles($request['roles'] ?? []);
+
+            DB::commit(); // Confirma los cambios
+            $successMessages = [            
+                'Usuario creado con éxito.'
+            ];    
+            session()->flash('success_messages', $successMessages);
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Revierte todo
+            session()->flash('error_messages', [
+                "Error al actualizar el aula.",
+                $e->getMessage()
+            ]);
+        }
 
         return redirect()->route('users.index');
     }

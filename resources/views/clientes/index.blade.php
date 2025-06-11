@@ -17,9 +17,9 @@
          
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center justify-content-between">
-            <h4 class="card-title"><i class="fas fa-school"></i>&nbsp;Clientes</h4>
+            <h4 class="card-title"><i class="{{$menuitems[$imenu1]['submenu'][$imenu2]['icon']}}"></i>&nbsp;{{$menuitems[$imenu1]['submenu'][$imenu2]['label']}}</h4>
             <div class="card-header-action">
-                <a href="{{route('clientes.create')}}" class="btn btn-sm btn-primary ajax-sidepanel"><i class="fa-solid fa-plus"></i>&nbsp;Nuevo</a>
+                <a href="{{route('clientes.create')}}" class="btn btn-sm btn-primary ajax-sidepanel"><i class="fa-solid fa-plus"></i>&nbsp;{{$menuitems[$imenu1]['submenu'][$imenu2]['label']}}</a>
             </div>
         </div>
         

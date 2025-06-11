@@ -68,6 +68,14 @@ class ClienteController extends Controller
                 })
                 ->orderByRaw('academia')->get();
         }   
+
+        $alumnosSelected = Alumno::whereHas('academiasRelation', function ($query) use ($academias) {
+            $query->whereIn('academiaid', $academias->pluck('id'));
+            })
+            ->select('alumnos.*')                        
+            ->distinct()
+            ->get();
+        
                 
 
         return view('clientes.create',[
@@ -79,6 +87,7 @@ class ClienteController extends Controller
             'h2Label'=>'Crear Cliente',            
             'academiasSeleccionadas'=>array(),
             'academias'=>$academias,
+            'alumnosSelected'=>$alumnosSelected ?? [],
         ]);
     
     }
@@ -98,6 +107,31 @@ class ClienteController extends Controller
             //Sincronizamos los usuarios con las academias        
             $cliente->academiasRelation()->sync($request['academias'] ?? []); // si no vienen, se limpia la relación          
             
+
+            $syncData = [];
+            foreach($request['academias'] as $academiaId){
+                if($request["alumnos"] ?? false){
+                    foreach($request["alumnos"] as $alumnoId){
+                        $syncData[] = [
+                            'academiaid' => $academiaId,
+                            'clienteid' => $cliente->id,
+                            'alumnoid' => $alumnoId,
+                        ];
+                    }
+                }else{
+                    $syncData[] = [
+                            'academiaid' => $academiaId,
+                            'clienteid' => $cliente->id,
+                            'alumnoid' => null, // Si no hay alumnos, dejamos este campo como null                          
+                        ];
+                }
+            }
+            DB::table('academias_clientes')
+                ->where('clienteid', $cliente->id)
+                ->delete(); // Elimina relaciones anteriores
+            DB::table('academias_clientes')->insert($syncData);
+
+
             DB::commit();            
             $successMessages = ['Cliente creado con éxito.'];
             session()->flash('success_messages', $successMessages);        

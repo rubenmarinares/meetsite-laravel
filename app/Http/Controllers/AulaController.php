@@ -144,7 +144,7 @@ class AulaController extends Controller
 
 
         try {
-            DB::beginTransaction();        
+            DB::beginTransaction();
 
             $validated=($request->validated());
             $validated["properties"] = json_encode($validated["properties"]);
