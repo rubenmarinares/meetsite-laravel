@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AcademiaRequest;
 use App\Models\Academia;
-use App\Models\Alumno;
+
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -27,7 +27,6 @@ class AcademiaController extends Controller
 
         $user = Auth::user();
 
-
         if($user->hasRole('super-admin')){
             $academias=Academia::query()->orderByRaw('academia')->get();
         }else{            
@@ -37,7 +36,6 @@ class AcademiaController extends Controller
                 })
                 ->orderByRaw('academia')->get();                                    
         }
-
         //MOSTRAR EL NÚMERO DE ALUMNOS QUE  TIENE CADA ACADEMIA
         /*$academias->each(function($academia){
             $academia->alumnos_count=$academia->alumnos()->count();
@@ -56,22 +54,51 @@ class AcademiaController extends Controller
 
     }
 
+    public function view(Academia $academia):View{
 
-    public function setAcademia($id){
 
-        $user = Auth::user();
+        $academiaSet = Academia::find($academia->id);
+
+
+        $academia= Academia::query()
+            ->where('id', $academia->id)
+            ->with(['users','alumnos'])
+            ->firstOrFail();
         
-        $academia = Academia::find($id);
-        //var_export($academia);        
-        if($academia){
-            session()->put('academia_set', $academia);
+
+
+        $profesores = $academia->profesores()->orderByRaw('nombre')->get();
+        return view('academias.view',[
+            'academia'=>$academia,
+            'profesores'=>$profesores,
+            'sidepanel'=>true,
+            'emptyMessage'=>'No hay academias registradas'            
+        ]);
+
+
+    }
+
+
+
+
+    
+    public function setAcademia(Academia $academia): RedirectResponse{
+
+
+        $this->authorize('setAcademia', $academia); // Esto llama a la policy
+
+        $user = Auth::user();    
+        $academiaSet = Academia::find($academia->id);
+        if($academiaSet){
+            session()->put('academia_set', $academiaSet);
         }        
+        //Añadimos academias actuallizadas a la sesión
         $academias = $user->academias();
         session()->put('user_academias', $academias);
 
         session()->flash('success_messages', ['Academia seleccionada correctamente.']);
 
-        return redirect()->route('home');
+        return redirect()->route('academias.view',$academiaSet);
         
 
     }
@@ -98,6 +125,7 @@ class AcademiaController extends Controller
     public function edit(Academia $academia) : View{
         
         return view('academias.edit',[
+        //return view('academias.partials.form',[
                         'academia'=>$academia,
                         'submitButtonText'=>'actualizar_academia',
                         'actionUrl'=>route('academias.update',$academia),                        

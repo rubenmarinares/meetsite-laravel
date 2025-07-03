@@ -146,8 +146,8 @@ function add_scroller() {
 
 // Menu click start
 function menu_click() {
-  console.log('menu click');
-  console.log(document.querySelectorAll('.pc-navbar li'));
+  //console.log('menu click');
+  //console.log(document.querySelectorAll('.pc-navbar li'));
   var vw = window.innerWidth;
   var elem = document.querySelectorAll('.pc-navbar li');
   for (var j = 0; j < elem.length; j++) {

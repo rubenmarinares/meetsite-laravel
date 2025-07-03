@@ -6,9 +6,15 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+use Illuminate\Support\ViewErrorBag;
+use App\Traits\TraitFormProfesor;
 
 class ProfesorRequest extends FormRequest
 {
+    use TraitFormProfesor;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -51,11 +57,55 @@ class ProfesorRequest extends FormRequest
             'apellidos.string'=>'El campo apellidos debe ser un texto',
             'apellidos.max'=>'El campo apellidos no debe superar los :max caracteres',
             'email.required'=>'El campo email es obligatorio',
-            'email.validation'=>'El campo email tiene un formato inválido',
+            'email.email'=>'El campo email tiene un formato inválido',
             'email.unique'=>'El campo email ya está en uso',
             'email.string'=>'El campo email debe ser un texto',             
             'academias.required'=>'El campo academias es obligatorio',
             'academias.array'=>'El campo academias debe ser un array',
         ];
+    }
+
+    
+    public function failedValidation(Validator $validator)
+    {
+        /** @var \Illuminate\Foundation\Http\FormRequest $this */
+
+        $viewErrors = new ViewErrorBag();
+        $viewErrors->put('default', $validator->errors());
+        
+        //$vars = $this->validated();
+        $vars=$this->all();
+
+        
+        
+        if($this->isMethod('put')){ //UPDATE  
+            $vars['profesor'] = $this->route('profesor');
+            $vars['academiasSeleccionadas'] = $this->input('academias', []);
+            $formVars = TraitFormProfesor::formularioProfesor($vars);
+            $formVars['sidepanel'] = true;
+            $formVars['profesor'] =$this->route('profesor');                       
+            
+            $view = view('profesores.edit',
+                array_merge(
+                    $formVars,                    
+                    ['errors' => $viewErrors]
+                )
+            )->render();
+        }else{ //CREATE
+            $vars['academiasSeleccionadas'] = $this->input('academias', []);
+            $formVars = TraitFormProfesor::formularioProfesor($vars);
+            $formVars['sidepanel'] = true;
+            $view = view('profesores.create',
+                array_merge(
+                    $formVars,
+                    ['errors' => $viewErrors]
+                )
+            )->render();
+        }
+                
+        throw new HttpResponseException(
+            response($view, 422)
+        );       
+        
     }
 }

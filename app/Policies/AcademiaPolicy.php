@@ -8,9 +8,18 @@ use Illuminate\Auth\Access\Response;
 
 class AcademiaPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
+    
+    public function setAcademia(User $user, Academia $academia): bool
+    {
+         if($user->hasRole('super-admin')){
+            return true;
+        }     
+        // Verifica en la base de datos si user está relacionado con esa academia
+        return $user->academiasRelation()->where('academias.id', $academia->id)->exists();
+
+
+    }
+    
     public function viewAny(User $user): bool
     {           
         // This method is called when checking if the user can view any models. 
@@ -21,9 +30,7 @@ class AcademiaPolicy
      * Determine whether the user can view the model.
      */
     public function view(User $user, Academia $academia): bool
-    {
-        
-        echo "view    ";dd();
+    {                
         return true;
     }
 

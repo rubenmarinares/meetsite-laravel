@@ -100,7 +100,7 @@
                             </div>
                         </li>
                         </ul>
-                        <a class="btn btn-sm btn-outline-primary mb-2" href="{{route('academias.edit',$academia->id)}}">Ver academia</a>
+                        <a class="btn btn-sm btn-outline-primary mb-2" href="{{route('academias.view',$academia)}}">Ver academia</a>
                     </div>
                 </div>
             </div> 

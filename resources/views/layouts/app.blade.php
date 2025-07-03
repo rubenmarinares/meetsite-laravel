@@ -28,8 +28,9 @@
 
 
     <!-- BOOTSTRAP-->
-    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!--
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" />
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     -->
 
     <!-- [Jquery] [DataTables] -->
@@ -65,6 +66,8 @@
     <!--<script src="{{asset('assets/js/plugins/validate/localization/messages_es.min.js')}}"></script>-->
 
     <style>
+
+      
 
     /*SELECT ACADEMIAS*/
 
@@ -172,6 +175,18 @@
     }
 
 
+    body {
+    font-family: 'Inter', sans-serif !important;
+    font-size:0.8em;
+  }
+
+
+  .pc-navbar a{text-decoration: none !important;}
+  .list-unstyled a {text-decoration: none !important;}
+
+
+
+
     </style>
 
 
@@ -227,8 +242,18 @@
 
 
 
+
+  <div class="offcanvas  offcanvas-end" style="overflow-y: auto;" tabindex="-1" id="sidepanel" aria-labelledby="sidepanel">
+    <div class="offcanvas-body" id="sidepanel-body" >Contenido de Sidepanel
+    </div>
+  </div>
+
     <script>
-        document.querySelectorAll(".dataTable").forEach((item) => {
+
+
+
+
+      document.querySelectorAll(".dataTable").forEach((item) => {
             $(item).DataTable({        
                 autoWidth: false,
                 columnDefs: [
@@ -239,16 +264,134 @@
         });
 
         menu_click();
+        $(".select2").select2({theme: 'bootstrap-5'});
 
 
+      //$(".select2").select2();
+      function renderPlugins(){
+        $(".select2").select2({theme: 'bootstrap-5'});
+        
+      }
 
-        //$(".select2").select2();
 
-        $(document).ready(function() {
-           $(".select2").select2({
-              theme: 'bootstrap-5' // Usa el tema de Bootstrap 5
+      async function checkAuth() {
+        const response = await fetch('/auth/check', {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+          }
+        });
+        if (response.status === 401) {
+          window.location.href = '/login';
+          return false;
+        }
+        const data = await response.json();
+        return data?.authenticated === true;
+      }
+
+
+      document.querySelectorAll(".ajax-sidepanel").forEach((item) => {
+        item.addEventListener("click",async function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const isLoggedIn = await checkAuth();
+          if (!isLoggedIn) return; 
+
+          //console.log(item.getAttribute("href"));
+          
+          fetch(item.getAttribute("href")).then(function (response) {
+            return response.text();
+          }).then(function (html) {                          
+              document.getElementById('sidepanel-body').innerHTML=html;
+              var sidepanel = new bootstrap.Offcanvas(document.getElementById('sidepanel'))
+              renderPlugins(document.getElementById('sidepanel'));
+              sidepanel.show();
+              /*PARA CARGAR LOS SCRIPTS QUE VIENEN EN EL HTML*/
+              /*
+              let scripts = document.getElementById('sidepanel-body').querySelectorAll("script");
+                scripts.forEach(script => {
+                    let newScript = document.createElement("script");
+                    if (script.src) {
+                        newScript.src = script.src;  // Si el script tiene "src", lo carga dinámicamente
+                        newScript.onload = () => console.log("Script cargado:", script.src);
+                    } else {
+                        newScript.textContent = script.textContent; // Si es un script inline, lo ejecuta
+                    }
+                    document.body.appendChild(newScript);
+                    document.body.removeChild(newScript);
+                });
+                */
+              
+          }).catch(function (err) {
+            // There was an error
+            console.warn('Something went wrong.', err);
           });
-});
+
+        return false;
+        });
+      });
+
+
+      /*ENVÍO DE FORMULARIO DENTRO DE SIDEPANEL*/
+      document.getElementById('sidepanel-body').addEventListener('submit', function(e) {
+        e.preventDefault();        
+        const form = e.target;
+        const formData = new FormData(form);
+        
+
+        let tab=0
+        if (form.action.includes('/profesores')) {tab=1}
+
+        fetch(form.action, {
+          method: form.method,
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest' // Para que Laravel detecte AJAX
+          }
+        })
+        .then(response => {            
+          if (response.status === 419) {
+            window.location.href = '/login';
+            return false;
+          } 
+          if (response.status === 422) {               
+              return response.text().then(html => {
+                document.getElementById('sidepanel-body').innerHTML = html;
+                renderPlugins(document.getElementById('sidepanel'));            
+              });
+          }
+          if (response.status === 200) {                
+              const url = new URL(window.location.href);
+              if(tab>0){
+                url.searchParams.set('tab', tab);
+              }
+              window.location.href = url.toString();                
+          }
+                      
+
+        })          
+        .catch(err => {
+          console.error(err);
+        });
+      });
+
+      document.addEventListener('click', function(e) {
+        if (e.target.closest('.close-ajax-sidepanel')) {
+            e.preventDefault();
+
+            const sidepanelElement = document.getElementById('sidepanel');
+              if (sidepanelElement) {
+                  const sidepanelInstance = bootstrap.Offcanvas.getInstance(sidepanelElement);
+                  if (sidepanelInstance) {
+                      sidepanelInstance.hide();
+                  }
+              }
+        }
+    });
+
+
+    
+
     </script>
 </body>
 

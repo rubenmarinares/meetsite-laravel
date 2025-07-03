@@ -17,9 +17,9 @@
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center justify-content-between">
             <h4 class="card-title"><i class="fas fa-school"></i>&nbsp;Nueva Academia</h4>
-            <div class="card-header-action">
-                <a href="{{route('academias.create')}}" class="btn btn-sm btn-primary ajax-sidepanel"><i class="fa-solid fa-plus"></i>&nbsp;Nueva</a>
-            </div>
+            <!--<div class="card-header-action">
+                <a href="{{route('academias.create')}}" class="btn btn-sm btn-primary "><i class="fa-solid fa-plus"></i>&nbsp;Nueva</a>
+            </div>-->
         </div>
 
         <div class="card-body ">

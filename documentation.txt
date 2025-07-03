@@ -39,3 +39,95 @@ php artisan db:seed
 
 Generar tabla pivot:
 php artisan make:migration create_role_user_table
+
+
+
+PREPARAR TRAIT EN LARAVEL PARA REUTILIZAR CÓDIGO
+
+<?php
+
+namespace App\Traits;
+
+use App\Models\Academia;
+use App\Models\Profesor;
+use Illuminate\Support\Facades\Auth;
+
+trait PreparaFormularioProfesor
+{
+    public function prepararFormularioProfesor(array $data = []): array
+    {
+        $user = Auth::user();
+
+        if ($user->hasRole('super-admin')) {
+            $academias = Academia::query()->orderByRaw('academia')->get();
+            $menu = true;
+        } else {
+            $academias = Academia::query()
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('users.id', $user->id);
+                })
+                ->orderByRaw('academia')->get();
+            $menu = false;
+        }
+
+        return [
+            'profesor' => new Profesor(),
+            'submitButtonText' => 'Crear Profesor',
+            'actionUrl' => route('profesores.store'),
+            'method' => 'POST',
+            'h2Label' => 'Crear Profesor',
+            'academiasSeleccionadas' => $data['academias'] ?? [],
+            'academias' => $academias,
+            'menu' => $menu,
+            'metaUrlForm' => route('profesores.create'),
+            'data' => $data,
+        ];
+    }
+}
+🧩 Paso 2: Usar el Trait en el Controller
+php
+Copiar
+Editar
+use App\Traits\PreparaFormularioProfesor;
+
+class ProfesorController extends Controller
+{
+    use PreparaFormularioProfesor;
+
+    public function create(): View
+    {
+        $vars = $this->prepararFormularioProfesor();
+
+        return view('profesores.partials.form', $vars);
+    }
+}
+🧩 Paso 3: Usar el Trait en ProfesorRequest
+php
+Copiar
+Editar
+use App\Traits\PreparaFormularioProfesor;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\ViewErrorBag;
+
+class ProfesorRequest extends FormRequest
+{
+    use PreparaFormularioProfesor;
+
+    public function failedValidation(Validator $validator)
+    {
+        $viewErrors = new ViewErrorBag();
+        $viewErrors->put('default', $validator->errors());
+
+        $formVars = $this->prepararFormularioProfesor($this->all());
+
+        $view = view('profesores.partials.form', array_merge(
+            $formVars,
+            ['errors' => $viewErrors]
+        ))->render();
+
+        throw new HttpResponseException(
+            response($view, 422)
+        );
+    }
+}

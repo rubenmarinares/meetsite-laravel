@@ -46,11 +46,17 @@
                 
               </a>
               <!--<div class="dropdown-menu dropdown-menu-end pc-h-dropdown lng-dropdown">-->
-                <div class="dropdown-menu dropdown-menu-end pc-h-dropdown lng-dropdown " 
-                style="max-height: 90vh; overflow-y: auto; position: absolute; inset: 0px 0px auto auto; 
-                margin: 0px; transform: translate(0px, 61px);" >
+              <div class="dropdown-menu dropdown-menu-end pc-h-dropdown lng-dropdown " 
+                style="max-height: 90vh; 
+                overflow-y: auto; 
+                position: absolute; 
+                inset: 0px 0px auto auto; 
+                margin: 0px; 
+                transform: translate(0px, 61px);
+                "
+                >
                     @foreach($academias as $academia)      
-                      <form action="{{ route('academia.set', $academia->id) }}" method="POST"> 
+                      <form action="{{ route('academia.set', $academia) }}" method="POST"> 
                          @csrf               
                           <button type="submit" class="dropdown-item" ><span>{{ $academia->academia }}</span></button>
                       </form>
