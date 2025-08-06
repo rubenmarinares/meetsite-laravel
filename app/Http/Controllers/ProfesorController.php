@@ -10,11 +10,14 @@ use Illuminate\Http\RedirectResponse;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Academia;
+
 
 use App\Traits\TraitFormProfesor;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+
 
 class ProfesorController extends Controller
 {
@@ -93,8 +96,7 @@ class ProfesorController extends Controller
     public function update(ProfesorRequest $request,Profesor $profesor){
         try {
             DB::beginTransaction();
-
-            $redirectUrl = $request->input('redirect_to', route('profesores.index'));
+            //$redirectUrl = $request->input('redirect_to', route('profesores.index'));
             $validated=($request->validated());
             $profesor->update($validated);
             $profesor->academiasRelation()->sync($request['academias'] ?? []);
@@ -115,12 +117,31 @@ class ProfesorController extends Controller
     }
 
    public function destroy(Request $request, Profesor $profesor):RedirectResponse{
-        $profesor->delete();
-        $successMessages = ['Profesor eliminado con éxito.'];
-        session()->flash('success_messages', $successMessages);   
 
-        $redirectUrl = $request->input('redirect_to', route('profesores.index'));
+     try {
+
+            DB::beginTransaction();
+            $profesor->delete();               
+            $redirectUrl = $request->input('redirect_to', route('profesores.index'));
+            $redirectUrl = URL::to($redirectUrl) . (Str::contains($redirectUrl, '?') ? '&' : '?') . 'tab=1';
+            DB::commit();
+
+            $successMessages = ['Profesor eliminado con éxito.'];
+            session()->flash('success_messages', $successMessages);
         return redirect()->to($redirectUrl);
+
+     } catch (\Exception $e) {
+            DB::rollBack(); // Revierte todo
+            session()->flash('error_messages', [
+                "Error al eliminar el recurso.",
+                $e->getMessage()
+            ]);
+            
+            $redirectUrl = $request->input('redirect_to', route('profesores.index'));
+            $redirectUrl = URL::to($redirectUrl) . (Str::contains($redirectUrl, '?') ? '&' : '?') . 'tab=2';
+            return redirect()->to($redirectUrl);
+            return redirect()->route('profesores.index');
+        }        
     }
 
 }

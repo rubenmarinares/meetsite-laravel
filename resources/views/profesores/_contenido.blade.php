@@ -8,28 +8,28 @@
             
             <div class="card-table table-responsive mt-2">            
             @if( $profesores->isNotEmpty() )
-            <table id="tablelist" class="table table-striped table-bordered dataTable">
+            <table id="dataTableProfesores" class="table table-striped table-bordered dataTable">
                 <thead>
                         <tr>
-                            <th scope="col" class="" >Action</th>
-                            <th scope="col" class="" >id</th>
-                            <th scope="col" class="">Apellidos</th>
-                            <th scope="col" class="">Nombre</th>
-                            <th scope="col" class="">email</th>
-                            <th scope="col" class="">Academias</th>
-                            <th scope="col" class="">Creado</th>
+                            <th scope="col">Action</th>
+                            <th scope="col">id</th>
+                            <th scope="col" data-exportable="true">Apellidos</th>
+                            <th scope="col" data-exportable="true">Nombre</th>
+                            <th scope="col" data-exportable="true">email</th>
+                            <th scope="col" data-exportable="true">Academias</th>
+                            <th scope="col" data-exportable="true">Creado</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($profesores as $profesor)
                         <tr class="">                                
                             <td class="" >                            
-                                <a href="{{route('profesores.edit',['profesor' => $profesor->id, 'sidepanel' =>true,'tab'=>2]) }}" title="Editar" class="btn btn-sm btn-primary ajax-sidepanel"><i class="fa-solid fa-pencil"></i></a> 
+                                <a href="{{route('profesores.edit',['profesor' => $profesor->id, 'sidepanel' =>true]) }}" title="Editar" class="btn btn-sm btn-primary ajax-sidepanel"><i class="fa-solid fa-pencil"></i></a> 
                                 <button 
                                 title="Eliminar registro"
                                 type="button" 
                                 class="btn btn-sm btn-danger"
-                                onclick="openDeleteModal({{$profesor}})">
+                                onclick="openDeleteModalProfesor({{$profesor}})">
                                 <i class="fa-solid fa-trash"></i>
                             </button>                                    
                             </td>
@@ -51,11 +51,11 @@
                 </table>
                 
                 <!-- Modal de confirmación -->
-                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal fade" id="deleteModalProfesor" tabindex="-1" aria-labelledby="deleteModalProfesorLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Eliminar Profesor</h5>
+                            <h5 class="modal-title" id="deleteModalProfesorLabel">Eliminar Profesor</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                         </div>
                         <div class="modal-body">
@@ -63,7 +63,7 @@
                             <p class="text-gray-700 mb-6">Esta acción no se puede deshacer.</p>
                         </div>
                         <div class="modal-footer">
-                            <form action="{{route('profesores.destroy',$profesor)}}" method="POST" class="inline" id="deleteForm">
+                            <form action="{{route('profesores.destroy',$profesor)}}" method="POST" class="inline" id="deleteFormProfesor">
                                 @csrf
                                 @method('DELETE')
                                 <div class="flex justify-center gap-4">
@@ -81,14 +81,15 @@
                 </div>                    
                 <!--FIN MODAL CONFIRMACIÓN-->            
                     <script>
-                    function openDeleteModal(profesor) {                                                
-                        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-                        const form = document.getElementById('deleteForm');                                                
+                    function openDeleteModalProfesor(profesor) {   
+                        console.log("formaction")                                             
+                        const modal = new bootstrap.Modal(document.getElementById('deleteModalProfesor'));
+                        const form = document.getElementById('deleteFormProfesor');                                                
                         modal.show();
                         form.action = `/profesores/${profesor.id}`; // Asegurate de que la ruta coincida con la definida en web.php    
                         modal.classList.remove('hidden');
                         modal.classList.add('flex');
-                    }                        
+                    }
                 </script>
                 @else
                     <p class="mb-3 text-gray-500 dark:text-gray-400">

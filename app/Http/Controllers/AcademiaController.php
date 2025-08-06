@@ -57,7 +57,7 @@ class AcademiaController extends Controller
     public function view(Academia $academia):View{
 
 
-        $academiaSet = Academia::find($academia->id);
+        //$academiaSet = Academia::find($academia->id);
 
 
         $academia= Academia::query()
@@ -68,9 +68,11 @@ class AcademiaController extends Controller
 
 
         $profesores = $academia->profesores()->orderByRaw('nombre')->get();
+        $alumnos = $academia->alumnos()->orderByRaw('nombre')->get();
         return view('academias.view',[
             'academia'=>$academia,
             'profesores'=>$profesores,
+            'alumnos'=>$alumnos,
             'sidepanel'=>true,
             'emptyMessage'=>'No hay academias registradas'            
         ]);

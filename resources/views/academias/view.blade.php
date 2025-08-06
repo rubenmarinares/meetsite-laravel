@@ -47,7 +47,7 @@
                 </li>
                 <li class="nav-item" role="presentation">
                   <button class="nav-link @if($tab==2) active @endif" id="academias-tab-2" data-bs-toggle="tab" data-bs-target="#academias-tab-2-pane" type="button" role="tab" aria-controls="analytics-tab-2-pane" aria-selected="false" tabindex="-1">
-                      <span class="d-flex align-items-center gap-2"><i class="fa-solid fa-graduation-cap"></i>Alumnos <span class="badge text-bg-primary">Total alumnos</span></span>
+                      <span class="d-flex align-items-center gap-2"><i class="fa-solid fa-graduation-cap"></i>Alumnos <span class="badge text-bg-primary">{{ count($alumnos) ?? 0 }}</span></span>
                   </button>
                 </li>
                 
@@ -71,11 +71,19 @@
               </div>
               <!--FIN PANEL ACADEMIAS-->
               <!--PANEL PROFESORES-->
-              <div class="tab-pane fade  @if($tab==1) active show @endif " id="academias-tab-1-pane" role="tabpanel" aria-labelledby="academias-tab-1" tabindex="0">
+              <div class="tab-pane fade  @if($tab==1) active show @endif " id="academias-tab-1-pane" role="tabpanel" aria-labelledby="academias-tab-1" tabindex="1">
                 <div class="card mt-2">                  
                   @include('profesores.index')
                 </div>
               </div>
+              <!-- FIN PANEL PROFESORES-->
+              <!--PANEL ALUMNOS-->
+              <div class="tab-pane fade  @if($tab==2) active show @endif " id="academias-tab-2-pane" role="tabpanel" aria-labelledby="academias-tab-2" tabindex="2">
+                <div class="card mt-2">                  
+                  @include('alumnos.index')
+                </div>
+              </div>
+              <!--FIN PANEL ALUMNOS-->
 
 
 

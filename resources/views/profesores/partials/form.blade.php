@@ -3,7 +3,7 @@
     @method($method)
 
 
-    <input type="text" name="redirect_to" value="{{ url()->previous() }}">
+    <!--<input type="text" name="redirect_to" value="{{ url()->previous() }}">-->
     <div class="row mb-3 mt-3">
         <div class="col-md-6">
             <label for="nombre" class="form-label">Nombre *</label>

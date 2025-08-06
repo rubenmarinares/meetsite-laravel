@@ -5,6 +5,7 @@
     <meta charset="utf-8">    
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!--<link rel="icon" href="/favicon.ico" type="image/x-icon">-->
     <title>{{ config('app.name', 'meetsite laravel') }}</title>
 
 
@@ -44,6 +45,8 @@
     <script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.1.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
     <!-- Datepicker -->
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/datepicker-bs5.min.css')}}">
     <script src="{{ asset('assets/js/plugins/datepicker-full.min.js')}}"></script>
@@ -250,18 +253,89 @@
 
     <script>
 
+      document.addEventListener('DOMContentLoaded', function () {
+          setTimeout(function () {
+              document.querySelectorAll('.alert').forEach(alert => {
+                  const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                  bsAlert.close();
+              });
+          }, 5000); // 10 segundos
+      });
 
+      function getExportableColumns(tableElement) {
+          const ths = tableElement.querySelectorAll('thead th');
+          return Array.from(ths).reduce((acc, th, index) => {
+              if (th.dataset.exportable === 'true') {
+                  acc.push(index);
+              }
+              return acc;
+          }, []);
+      }
 
+      function initExportableDataTable(tableElement) {
+        const exportableColumns = getExportableColumns(tableElement);
+
+        $(tableElement).DataTable({
+           dom: "<'row mb-2'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                "<'row mb-2'<'col-sm-12 text-end'B>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-3 align-items-center'<'col-sm-12 col-md-5 mt-2 text-start'i><'col-sm-12 col-md-7 mt-2 text-end'p>>",
+            autoWidth: false,
+            language: { url: 'https://cdn.datatables.net/plug-ins/2.1.4/i18n/es-ES.json' },
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Todos']],
+            buttons: [
+                {
+                    extend: 'collection',
+                    text: '<i class="fa fa-download"></i> Exportar',
+                    className: 'btn btn-sm btn-primary',
+                    align: 'left',
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel"></i> Excel',
+                            className: 'btn btn-sm btn-success',
+                            exportOptions: { columns: exportableColumns }
+                        },
+                        {
+                            extend: 'csvHtml5',
+                            text: '<i class="fa fa-file-csv"></i> CSV',
+                            className: 'btn btn-sm btn-secondary',
+                            exportOptions: { columns: exportableColumns }
+                        }
+                    ]
+                    /*buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel"></i> Excel',
+                            exportOptions: { columns: exportableColumns }
+                        },
+                        {
+                            extend: 'csvHtml5',
+                            text: '<i class="fa fa-file-csv"></i> CSV',
+                            exportOptions: { columns: exportableColumns }
+                        }
+                    ]*/
+                }
+            ]
+        });
+      }
 
       document.querySelectorAll(".dataTable").forEach((item) => {
-            $(item).DataTable({        
-                autoWidth: false,
-                columnDefs: [
-                    { width: '100px', targets: 0 } // Columna 0 (primera)
-                ],
-                language: {url: 'https://cdn.datatables.net/plug-ins/2.1.4/i18n/es-ES.json'}          
-            }); 
-        });
+          initExportableDataTable(item);
+      });
+
+
+      
+      /*document.querySelectorAll(".dataTable").forEach((item) => {
+          $(item).DataTable({        
+              autoWidth: false,
+              columnDefs: [
+                  { width: '100px', targets: 0 } 
+              ],
+              language: {url: 'https://cdn.datatables.net/plug-ins/2.1.4/i18n/es-ES.json'}          
+          }); 
+      });*/
+      
 
         menu_click();
         $(".select2").select2({theme: 'bootstrap-5'});
@@ -341,6 +415,7 @@
 
         let tab=0
         if (form.action.includes('/profesores')) {tab=1}
+        if (form.action.includes('/alumnos')) {tab=2}
 
         fetch(form.action, {
           method: form.method,
@@ -367,8 +442,6 @@
               }
               window.location.href = url.toString();                
           }
-                      
-
         })          
         .catch(err => {
           console.error(err);
@@ -388,10 +461,6 @@
               }
         }
     });
-
-
-    
-
     </script>
 </body>
 

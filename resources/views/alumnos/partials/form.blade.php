@@ -4,15 +4,15 @@
 
     <div class="row mb-3 mt-3">
         <div class="col-md-6">
-            <label for="nombre" class="form-label">Nombre *</label>
-            <input type="text" value="{{ old('nombre', $alumno->nombre) }}" name="nombre" id="nombre" class="form-control @error('nombre') is-invalid @enderror" autocomplete="off" placeholder="Nombre del Alumno">
+            <label for="nombre" class="form-label">Nombre *</label>            
+            <input type="text" value="{{ old('nombre', $data['nombre'] ?? $alumno->nombre) }}"  name="nombre" id="nombre" class="form-control @error('nombre') is-invalid @enderror" autocomplete="off" placeholder="Nombre del Alumno">
             @error('nombre')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
         </div>
         <div class="col-md-6">
             <label for="apellidos" class="form-label">Apellidos *</label>
-            <input type="text" value="{{ old('apellidos', $alumno->apellidos) }}" name="apellidos" id="apellidos" class="form-control @error('apellidos') is-invalid @enderror" autocomplete="off" placeholder="Apellidos del Alumno">
+            <input type="text" value="{{ old('apellidos', $data['apellidos'] ?? $alumno->apellidos) }}" name="apellidos" id="apellidos" class="form-control @error('apellidos') is-invalid @enderror" autocomplete="off" placeholder="Apellidos del Alumno">
             @error('apellidos')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
@@ -21,7 +21,7 @@
     <div class="row mb-3 mt-3">
         <div class="col-md-6">
             <label for="email" class="form-label">email *</label>
-            <input type="email" value="{{ old('email', $alumno->email) }}" name="email" id="email" class="form-control @error('email') is-invalid @enderror" autocomplete="off" placeholder="email@alumno.com">
+            <input type="email" value="{{ old('email', $data['email'] ?? $alumno->email) }}" name="email" id="email" class="form-control @error('email') is-invalid @enderror" autocomplete="off" placeholder="email@alumno.com">
             @error('email')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
