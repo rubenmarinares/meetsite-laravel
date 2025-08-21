@@ -7,6 +7,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+use Illuminate\Support\ViewErrorBag;
+use App\Traits\TraitFormAsignatura;
 
 
 class AsignaturaRequest extends FormRequest
@@ -51,5 +56,49 @@ class AsignaturaRequest extends FormRequest
             'academias.array'=>'El campo academias debe ser un array',
             'descripcion.max'=>'El campo descripción no debe superar los :max caracteres',
         ];
+    }
+
+
+    public function failedValidation(Validator $validator)
+    {
+        
+
+        $viewErrors = new ViewErrorBag();
+        $viewErrors->put('default', $validator->errors());
+        
+        //$vars = $this->validated();
+        $vars=$this->all();
+
+        
+        
+        if($this->isMethod('put')){ //UPDATE  
+            $vars['asignatura'] = $this->route('asignatura');
+            $vars['academiasSeleccionadas'] = $this->input('academias', []);
+            $formVars = TraitFormAsignatura::formularioAsignatura($vars);
+            $formVars['sidepanel'] = true;
+            $formVars['asignatura'] =$this->route('asignatura');                       
+            
+            $view = view('asignaturas.edit',
+                array_merge(
+                    $formVars,                    
+                    ['errors' => $viewErrors]
+                )
+            )->render();
+        }else{ //CREATE
+            $vars['academiasSeleccionadas'] = $this->input('academias', []);
+            $formVars = TraitFormAsignatura::formularioAsignatura($vars);
+            $formVars['sidepanel'] = true;
+            $view = view('asignaturas.create',
+                array_merge(
+                    $formVars,
+                    ['errors' => $viewErrors]
+                )
+            )->render();
+        }
+                
+        throw new HttpResponseException(
+            response($view, 422)
+        );       
+        
     }
 }

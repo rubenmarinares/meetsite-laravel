@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AcademiaRequest;
 use App\Models\Academia;
+use App\Models\Cliente;
 
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
@@ -58,7 +59,7 @@ class AcademiaController extends Controller
 
 
         //$academiaSet = Academia::find($academia->id);
-
+        $user = Auth::user();
 
         $academia= Academia::query()
             ->where('id', $academia->id)
@@ -67,12 +68,25 @@ class AcademiaController extends Controller
         
 
 
+            
         $profesores = $academia->profesores()->orderByRaw('nombre')->get();
         $alumnos = $academia->alumnos()->orderByRaw('nombre')->get();
+        $asignaturas = $academia->asignaturas()->orderByRaw('asignatura')->get();
+        $aulas = $academia->aulas()->orderByRaw('aula')->get();
+        $clientes = $academia->clientes()->orderByRaw('nombre')->get(); 
+        /*
+        $clientes = Cliente::whereHas('academiasRelation', function ($query) use ($user) {
+                            $query->whereIn('academiaid', $user->academias()->pluck('id'));
+                        })->get();     
+                        */
+    
         return view('academias.view',[
             'academia'=>$academia,
             'profesores'=>$profesores,
             'alumnos'=>$alumnos,
+            'asignaturas'=>$asignaturas,
+            'aulas'=>$aulas,
+            'clientes'=>$clientes,
             'sidepanel'=>true,
             'emptyMessage'=>'No hay academias registradas'            
         ]);

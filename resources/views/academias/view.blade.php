@@ -50,7 +50,21 @@
                       <span class="d-flex align-items-center gap-2"><i class="fa-solid fa-graduation-cap"></i>Alumnos <span class="badge text-bg-primary">{{ count($alumnos) ?? 0 }}</span></span>
                   </button>
                 </li>
-                
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link @if($tab==3) active @endif" id="academias-tab-3" data-bs-toggle="tab" data-bs-target="#academias-tab-3-pane" type="button" role="tab" aria-controls="analytics-tab-3-pane" aria-selected="false" tabindex="-1">
+                      <span class="d-flex align-items-center gap-2"><i class="fa-solid fa-book-bookmark"></i>Asignaturas <span class="badge text-bg-primary">{{ count($asignaturas) ?? 0 }}</span></span>
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link @if($tab==4) active @endif" id="academias-tab-4" data-bs-toggle="tab" data-bs-target="#academias-tab-4-pane" type="button" role="tab" aria-controls="analytics-tab-4-pane" aria-selected="false" tabindex="-1">
+                      <span class="d-flex align-items-center gap-2"><i class="fa-solid fa-chalkboard-user"></i>Aulas <span class="badge text-bg-primary">{{ count($aulas) ?? 0 }}</span></span>
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link @if($tab==5) active @endif" id="academias-tab-5" data-bs-toggle="tab" data-bs-target="#academias-tab-5-pane" type="button" role="tab" aria-controls="analytics-tab-5-pane" aria-selected="false" tabindex="-1">
+                      <span class="d-flex align-items-center gap-2"><i class="fas fa-user-tag"></i>Clientes <span class="badge text-bg-primary">{{ count($clientes) ?? 0 }}</span></span>
+                  </button>
+                </li>
             </ul>
             
             <div class="tab-content">
@@ -84,7 +98,28 @@
                 </div>
               </div>
               <!--FIN PANEL ALUMNOS-->
+              <!--PANEL ASIGNATURAS-->
+              <div class="tab-pane fade  @if($tab==3) active show @endif " id="academias-tab-3-pane" role="tabpanel" aria-labelledby="academias-tab-3" tabindex="3">
+                <div class="card mt-2">                  
+                  @include('asignaturas.index')
+                </div>
+              </div>
+              <!--FIN PANEL ASIGNATURAS-->
+              <!--PANEL AULAS-->
+              <div class="tab-pane fade  @if($tab==4) active show @endif " id="academias-tab-4-pane" role="tabpanel" aria-labelledby="academias-tab-4" tabindex="4">
+                <div class="card mt-2">                  
+                  @include('aulas.index')
+                </div>
+              </div>
+              <!--FIN PANEL AULAS-->
 
+              <!--PANEL CLIENTES-->
+              <div class="tab-pane fade  @if($tab==5) active show @endif " id="academias-tab-5-pane" role="tabpanel" aria-labelledby="academias-tab-5" tabindex="5">
+                <div class="card mt-2">                  
+                  @include('clientes.index')
+                </div>
+              </div>
+              <!--FIN PANEL CLIENTES-->
 
 
 
@@ -93,8 +128,4 @@
       </div>
     </div>
   </div>
-
-
-
-
 </x-app-layout>

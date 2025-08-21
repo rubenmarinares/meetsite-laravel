@@ -7,6 +7,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+use Illuminate\Support\ViewErrorBag;
+use App\Traits\TraitFormAula;
 
 
 class AulaRequest extends FormRequest
@@ -44,9 +49,9 @@ class AulaRequest extends FormRequest
 
     public function messages():array{
         return [
-            'asignatura.required'=>'El campo nombre es obligatorio',            
-            'asignatura.string'=>'El campo nombre debe ser un texto',            
-            'asignatura.max'=>'El campo descripción no debe superar los :max caracteres',
+            'aula.required'=>'El campo nombre es obligatorio',            
+            'aula.string'=>'El campo nombre debe ser un texto',            
+            'aula.max'=>'El campo descripción no debe superar los :max caracteres',
             'academias.required'=>'El campo academias es obligatorio',
             'academias.array'=>'El campo academias debe ser un array',
             'descripcion.max'=>'El campo descripción no debe superar los :max caracteres',
@@ -55,4 +60,50 @@ class AulaRequest extends FormRequest
             'properties.capacidad.min'=>"El campo capacidad debe ser mayor que 0",            
         ];
     }
+
+
+
+    public function failedValidation(Validator $validator)
+    {
+        
+
+        $viewErrors = new ViewErrorBag();
+        $viewErrors->put('default', $validator->errors());
+        
+        //$vars = $this->validated();
+        $vars=$this->all();
+
+        
+        
+        if($this->isMethod('put')){ //UPDATE  
+            $vars['aula'] = $this->route('aula');
+            $vars['academiasSeleccionadas'] = $this->input('academias', []);
+            $formVars = TraitFormAula::formularioAula($vars);
+            $formVars['sidepanel'] = true;
+            $formVars['aula'] =$this->route('aula');                       
+            
+            $view = view('aulas.edit',
+                array_merge(
+                    $formVars,                    
+                    ['errors' => $viewErrors]
+                )
+            )->render();
+        }else{ //CREATE
+            $vars['academiasSeleccionadas'] = $this->input('academias', []);
+            $formVars = TraitFormAula::formularioAula($vars);
+            $formVars['sidepanel'] = true;
+            $view = view('aulas.create',
+                array_merge(
+                    $formVars,
+                    ['errors' => $viewErrors]
+                )
+            )->render();
+        }
+                
+        throw new HttpResponseException(
+            response($view, 422)
+        );       
+        
+    }
+
 }

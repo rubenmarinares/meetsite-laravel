@@ -12,6 +12,10 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\ViewErrorBag;
 use App\Traits\TraitFormProfesor;
 
+/**
+ * @method mixed route(string $name = null, mixed $default = null)
+ */
+
 class ProfesorRequest extends FormRequest
 {
     use TraitFormProfesor;

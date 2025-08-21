@@ -24,7 +24,7 @@ class Aula extends Model
     public static function propertiesDefault()
     {
         return [
-            'capacidad' => '',            
+            'capacidad' => '',
         ];
     }
 

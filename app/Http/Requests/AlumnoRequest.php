@@ -15,6 +15,8 @@ use App\Traits\TraitFormAlumno;
 
 
 
+ 
+
 class AlumnoRequest extends FormRequest
 
 {

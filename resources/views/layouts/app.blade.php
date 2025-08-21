@@ -323,25 +323,12 @@
       document.querySelectorAll(".dataTable").forEach((item) => {
           initExportableDataTable(item);
       });
-
-
-      
-      /*document.querySelectorAll(".dataTable").forEach((item) => {
-          $(item).DataTable({        
-              autoWidth: false,
-              columnDefs: [
-                  { width: '100px', targets: 0 } 
-              ],
-              language: {url: 'https://cdn.datatables.net/plug-ins/2.1.4/i18n/es-ES.json'}          
-          }); 
-      });*/
       
 
-        menu_click();
-        $(".select2").select2({theme: 'bootstrap-5'});
+      menu_click();
+      $(".select2").select2({theme: 'bootstrap-5'});
 
-
-      //$(".select2").select2();
+      
       function renderPlugins(){
         $(".select2").select2({theme: 'bootstrap-5'});
         
@@ -416,6 +403,9 @@
         let tab=0
         if (form.action.includes('/profesores')) {tab=1}
         if (form.action.includes('/alumnos')) {tab=2}
+        if (form.action.includes('/asignaturas')) {tab=3}
+        if (form.action.includes('/aulas')) {tab=4}
+        if (form.action.includes('/clientes')) {tab=5}        
 
         fetch(form.action, {
           method: form.method,

@@ -15,6 +15,13 @@ use Illuminate\Support\Facades\Auth;
 
 
 use Illuminate\Support\Facades\DB;
+
+
+use App\Traits\TraitFormCliente;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+
+
 class ClienteController extends Controller
 {
 
@@ -53,9 +60,18 @@ class ClienteController extends Controller
         return view('clientes.index',[
             'clientes'=>$clientes,
             'emptyMessage'=>'No hay cliente registrados',
+            'sidepanel'=>false
         ]);
     }
 
+
+    public function create():View{
+        $vars = TraitFormCliente::formularioCliente();
+        //$var['sidepanel']=request('sidepanel', false);
+        return view('clientes.create', $vars);        
+    }
+
+    /*
     public function create():View{
         $user = Auth::user();
         if($user->hasRole('super-admin')){
@@ -92,19 +108,164 @@ class ClienteController extends Controller
     
     }
 
+    */
+
+    public function store(ClienteRequest $request){
+
+        
+        try {
+            DB::beginTransaction();        
+
+            $validated=($request->validated());
     
-    public function store(ClienteRequest $request): RedirectResponse{
+            $cliente=Cliente::create($validated);
+            
+                
+            $cliente->academiasRelation()->sync($request['academias'] ?? []); // si no vienen, se limpia la relación          
+            
+
+            $syncData = [];
+            foreach($request['academias'] as $academiaId){
+                if($request["alumnos"] ?? false){
+                    foreach($request["alumnos"] as $alumnoId){
+                        $syncData[] = [
+                            'academiaid' => $academiaId,
+                            'clienteid' => $cliente->id,
+                            'alumnoid' => $alumnoId,
+                        ];
+                    }
+                }else{
+                    $syncData[] = [
+                            'academiaid' => $academiaId,
+                            'clienteid' => $cliente->id,
+                            'alumnoid' => null, // Si no hay alumnos, dejamos este campo como null                          
+                        ];
+                }
+            }
+            DB::table('academias_clientes')
+                ->where('clienteid', $cliente->id)
+                ->delete(); // Elimina relaciones anteriores
+            DB::table('academias_clientes')->insert($syncData);
+
+
+            DB::commit();            
+            $successMessages = ['Cliente creado con éxito.'];
+            session()->flash('success_messages', $successMessages);        
+
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Revierte todo
+            
+            session()->flash('error_messages', [
+                "Error al crear el Cliente.",
+                $e->getMessage()
+            ]);
+        }      
+    }
+
+    public function edit(Cliente $cliente) : View{        
+        $var['sidepanel']=request('sidepanel', false);
+        $var['cliente']=$cliente;
+        $var['academiasSeleccionadas']=$cliente->academiasRelation->pluck('id')->toArray();
+        $var['alumnosSelected']=$cliente->alumnosRelation->pluck('id')->toArray();
+        
+        
+        $vars = TraitFormCliente::formularioCliente($var);
+
+        return view('clientes.edit', $vars);        
+    }
+
+
+    public function update(ClienteRequest $request,Cliente $cliente){
+        try {
+            DB::beginTransaction();        
+
+            $validated=($request->validated());
+            //$validated["properties"] = json_encode($validated["properties"]);
+            $cliente->update($validated);
+            
+            $successMessages = ['Cliente actualizado con éxito.'];
+            
+            //Sincronizamos los usuarios con las academias        
+            //$cliente->academiasRelation()->sync($request['academias'] ?? []); // si no vienen, se limpia la relación
+            $syncData = [];
+            foreach($request['academias'] as $academiaId){
+                if($request["alumnos"] ?? false){
+                    foreach($request["alumnos"] as $alumnoId){
+                        $syncData[] = [
+                            'academiaid' => $academiaId,
+                            'clienteid' => $cliente->id,
+                            'alumnoid' => $alumnoId,
+                        ];
+                    }
+                }else{
+                    $syncData[] = [
+                            'academiaid' => $academiaId,
+                            'clienteid' => $cliente->id,
+                            'alumnoid' => null, // Si no hay alumnos, dejamos este campo como null                          
+                        ];
+                }
+            }
+            DB::table('academias_clientes')
+                ->where('clienteid', $cliente->id)
+                ->delete(); // Elimina relaciones anteriores
+            DB::table('academias_clientes')->insert($syncData);
+
+            DB::commit();
+            session()->flash('success_messages', $successMessages);        
+
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Revierte todo
+            
+            session()->flash('error_messages', [
+                "Error al actualizar el cliente.",
+                $e->getMessage()
+            ]);
+        }
+    }
+
+    public function destroy(Request $request, Cliente $cliente):RedirectResponse{   
+    
+     try {
+            DB::beginTransaction();
+
+            $cliente->delete();
+            //throw new \Exception("Forzando error para probar el catch");
+            DB::commit();
+            $successMessages = [            
+                'Cliente eliminado con éxito.'
+            ];
+            session()->flash('success_messages', $successMessages);            
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Revierte todo
+            session()->flash('error_messages', [
+                "Error al eliminar el recurso.",
+                $e->getMessage()
+            ]);
+            
+            
+        }   
+
+        $redirectUrl = $request->input('redirect_to', route('clientes.index'));
+        $redirectUrl = URL::to($redirectUrl) . (Str::contains($redirectUrl, '?') ? '&' : '?') . 'tab=5';
+        return redirect()->to($redirectUrl);
+    }
+
+
+    
+    /*public function store(ClienteRequest $request): RedirectResponse{
 
 
         try {
             DB::beginTransaction();        
 
             $validated=($request->validated());
-            //$validated["properties"] = json_encode($validated["properties"]);
+    
             $cliente=Cliente::create($validated);
             
-            
-            //Sincronizamos los usuarios con las academias        
+                
             $cliente->academiasRelation()->sync($request['academias'] ?? []); // si no vienen, se limpia la relación          
             
 
@@ -149,10 +310,11 @@ class ClienteController extends Controller
         return redirect()->route('clientes.index');
 
     }
+        */
 
 
-    
-    public function edit(Cliente $cliente) : View{        
+
+    /*public function edit(Cliente $cliente) : View{        
         
         $user = Auth::user();
         if($user->hasRole('super-admin')){
@@ -195,12 +357,22 @@ class ClienteController extends Controller
                         'academias'=>$academias                        
         ]);
     }
+*/
 
+    
 
-    public function update(ClienteRequest $request,Cliente $cliente):RedirectResponse{
+    /*
+    public function destroy(Cliente $cliente):RedirectResponse{        
 
+        $cliente->delete();
+        $successMessages = ['Cliente eliminada con éxito.'];
+        session()->flash('success_messages', $successMessages);   
+        return redirect()->route('clientes.index');
+    }
+    */
+
+    /*public function update(ClienteRequest $request,Cliente $cliente):RedirectResponse{
         
-
         try {
             DB::beginTransaction();        
 
@@ -250,15 +422,10 @@ class ClienteController extends Controller
 
         return redirect()->route('clientes.index');
     }
+    */
         
    
-   public function destroy(Cliente $cliente):RedirectResponse{        
-
-        $cliente->delete();
-        $successMessages = ['Cliente eliminada con éxito.'];
-        session()->flash('success_messages', $successMessages);   
-        return redirect()->route('clientes.index');
-    }
+   
     
     
 

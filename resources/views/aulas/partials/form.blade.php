@@ -4,9 +4,9 @@
 
     <div class="row mb-3 mt-3">
         <div class="col-md-6">
-            <label for="asignatura" class="form-label">Aula *</label>
-            <input type="text" value="{{ old('aula', $aula->aula) }}" name="aula" id="aula" class="form-control @error('aula') is-invalid @enderror" autocomplete="off" placeholder="Nombre de Aula">
-            @error('asignatura')
+            <label for="aula" class="form-label">Aula *</label>
+            <input type="text" value="{{ old('aula',$data["aula"] ?? $aula->aula) }}" name="aula" id="aula" class="form-control @error('aula') is-invalid @enderror" autocomplete="off" placeholder="Nombre de Aula">
+            @error('aula')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror
         </div>        
@@ -25,7 +25,7 @@
                         @endforeach
                     </select>
                 @else
-                    <input type="text" value="{{ old("properties.$clave", $valor) }}" name="properties[{{ $clave }}]" id="{{ $clave }}" class="form-control @error("properties.$clave") is-invalid @enderror">
+                    <input type="text" value="{{ old("properties.$clave",$data["properties"][$clave] ?? $valor) }}" name="properties[{{ $clave }}]" id="{{ $clave }}" class="form-control @error("properties.$clave") is-invalid @enderror">
                 @endif
 
                 @error("properties.$clave")

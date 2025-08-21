@@ -5,13 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AsignaturaRequest;
 use App\Models\Asignatura;
 
-use App\Models\Academia;
 use Illuminate\Http\Request;
 
 use Illuminate\Http\RedirectResponse;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+
+use App\Traits\TraitFormAsignatura;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+
 
 class AsignaturaController extends Controller
 {
@@ -28,11 +34,8 @@ class AsignaturaController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
-        
+    {        
         $user = Auth::user();
-
         if($user->hasRole('super-admin')){
             $asignaturas=Asignatura::query()->orderByRaw('asignatura')->get();
         }else{            
@@ -40,59 +43,115 @@ class AsignaturaController extends Controller
             $asignaturas = Asignatura::whereHas('academiasRelation', function ($query) use ($user) {
                             $query->whereIn('academiaid', $user->academias()->pluck('id'));
                         })->get();
-        }
-
-        
+        }        
         return view('asignaturas.index',[
             'asignaturas'=>$asignaturas,
             'emptyMessage'=>'No hay asignaturas registrados',
+            'sidepanel'=>false,
         ]);
     }
+
 
     public function edit(Asignatura $asignatura) : View{        
-        
-        $user = Auth::user();
-        if($user->hasRole('super-admin')){
-            $academias=Academia::query()->orderByRaw('academia')->get();
-        }else{
-            $academias = Academia::query()
-                ->whereHas('users', function ($query) use ($user) {
-                    $query->where('users.id', $user->id);
-                })
-                ->orderByRaw('academia')->get();
-        }
+        $var['sidepanel']=request('sidepanel', false);
+        $var['asignatura']=$asignatura;
+        $var['academiasSeleccionadas']=$asignatura->academiasRelation->pluck('id')->toArray();
 
-        //$academias=Academia::query()->orderByRaw('academia')->get();
+        $vars = TraitFormAsignatura::formularioAsignatura($var);
 
-        return view('asignaturas.edit',[
-                        'asignatura'=>$asignatura,
-                        'submitButtonText'=>'Actualizar Asignatura',
-                        'actionUrl'=>route('asignaturas.update',$asignatura),  
-                        'method'=>'PUT',
-                        'h2Label'=>'Editar Asignatura',                        
-                        'academiasSeleccionadas'=>$asignatura->academiasRelation->pluck('id')->toArray(),
-                        'academias'=>$academias,                        
-        ]);
+        return view('asignaturas.edit', $vars);        
+    }
+    
+    //ACTUALIZAR RECURSO
+    public function update(AsignaturaRequest $request,Asignatura $asignatura){
+        try {
+            DB::beginTransaction();
+
+            //$redirectUrl = $request->input('redirect_to', route('profesores.index'));
+            $validated=($request->validated());
+            $asignatura->update($validated);
+            $asignatura->academiasRelation()->sync($request['academias'] ?? []);
+    
+            //throw new \Exception("Error forzado para probar el catch");
+            DB::commit();            
+            $successMessages = ['Asignatura actualizado con éxito.'];
+            session()->flash('success_messages', $successMessages);            
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Revierte todo
+            session()->flash('error_messages', [
+                "Error al actualizar el recurso.",
+                $e->getMessage()
+            ]);
+        }        
+    }
+   
+
+    //use TraitFormAsignatura;    
+    public function create():View{
+        $vars = TraitFormAsignatura::formularioAsignatura();
+        //$var['sidepanel']=request('sidepanel', false);
+        return view('asignaturas.create', $vars);        
     }
 
-    public function update(AsignaturaRequest $request,Asignatura $asignatura):RedirectResponse{
-            
+public function store(AsignaturaRequest $request){
+
+    try {
+        DB::beginTransaction();
         $validated=($request->validated());
-         
-        $asignatura->update($validated);
+                        
+        $asignatura=Asignatura::create($validated);
+        $asignatura->academiasRelation()->sync($request['academias'] ?? []); // si no vienen, se limpia la relación              
+        DB::commit();
+        $successMessages = [            
+            'Asignatura creada con éxito.'
+        ];    
+        session()->flash('success_messages', $successMessages);
+    } catch (\Exception $e) {
+        DB::rollBack(); // Revierte todo
+        session()->flash('error_messages', [
+            "Error al crear el recurso.",
+            $e->getMessage()
+        ]);
+    }        
+}
+    
+    
+    
+    public function destroy(Request $request, Asignatura $asignatura):RedirectResponse{   
+    
+     try {
+            DB::beginTransaction();
 
-        $successMessages = ['Asignatura actualizado con éxito.'];
-        session()->flash('success_messages', $successMessages);        
+            $asignatura->delete();
 
-        //Sincronizamos los usuarios con las academias
-        //$asignatura->academiasRelation()->sync($request->input('academias', [])); // si no vienen, se limpia la relación
-        $asignatura->academiasRelation()->sync($request['academias'] ?? []); // si no vienen, se limpia la relación  
-        //Sincronizamos lo usuarios con los roles        
+            
+            
+            //throw new \Exception("Forzando error para probar el catch");
+            DB::commit();
+            $successMessages = [            
+                'Asignatura eliminada con éxito.'
+            ];
+            session()->flash('success_messages', $successMessages);            
 
+        } catch (\Exception $e) {
+            DB::rollBack(); // Revierte todo
+            session()->flash('error_messages', [
+                "Error al eliminar el recurso.",
+                $e->getMessage()
+            ]);
+            
+            
+        }   
 
-        return redirect()->route('asignaturas.index');
+        $redirectUrl = $request->input('redirect_to', route('asignaturas.index'));
+        $redirectUrl = URL::to($redirectUrl) . (Str::contains($redirectUrl, '?') ? '&' : '?') . 'tab=3';
+        return redirect()->to($redirectUrl);
     }
 
+
+
+     /*
     public function create():View{
 
         $user = Auth::user();
@@ -116,35 +175,52 @@ class AsignaturaController extends Controller
             'h2Label'=>'Crear Asignatura',            
             'academiasSeleccionadas'=>array(),
             'academias'=>$academias,
-        ]);
-    
+        ]);        
     }
+    */
 
-    public function store(AsignaturaRequest $request): RedirectResponse{
-        $validated=($request->validated());
-                
-        $asignatura=Asignatura::create($validated);
-
+    /*
+    public function edit(Asignatura $asignatura) : View{        
         
-        $successMessages = [            
-            'Asignatura creado con éxito.'
-        ];    
-        session()->flash('success_messages', $successMessages);
-          
+        $user = Auth::user();
+        if($user->hasRole('super-admin')){
+            $academias=Academia::query()->orderByRaw('academia')->get();
+        }else{
+            $academias = Academia::query()
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('users.id', $user->id);
+                })
+                ->orderByRaw('academia')->get();
+        }
+        
+
+        return view('asignaturas.edit',[
+                        'asignatura'=>$asignatura,
+                        'submitButtonText'=>'Actualizar Asignatura',
+                        'actionUrl'=>route('asignaturas.update',$asignatura),  
+                        'method'=>'PUT',
+                        'h2Label'=>'Editar Asignatura',                        
+                        'academiasSeleccionadas'=>$asignatura->academiasRelation->pluck('id')->toArray(),
+                        'academias'=>$academias,                        
+        ]);
+    }
+    */
+
+    /*public function update(AsignaturaRequest $request,Asignatura $asignatura):RedirectResponse{
+            
+        $validated=($request->validated());
+         
+        $asignatura->update($validated);
+
+        $successMessages = ['Asignatura actualizado con éxito.'];
+        session()->flash('success_messages', $successMessages);        
+    
         $asignatura->academiasRelation()->sync($request['academias'] ?? []); // si no vienen, se limpia la relación  
+        //Sincronizamos lo usuarios con los roles        
+
 
         return redirect()->route('asignaturas.index');
     }
-    
-    
-    
-    
-   public function destroy(Asignatura $asignatura):RedirectResponse{        
-
-        $asignatura->delete();
-        $successMessages = ['Asignatura eliminado con éxito.'];
-        session()->flash('success_messages', $successMessages);   
-        return redirect()->route('asignaturas.index');
-    }
+    */
 
 }

@@ -82,13 +82,13 @@
                 <!--FIN MODAL CONFIRMACIÓN-->            
                     <script>
                     function openDeleteModalProfesor(profesor) {   
-                        console.log("formaction")                                             
+                        //console.log("formaction")                                             
                         const modal = new bootstrap.Modal(document.getElementById('deleteModalProfesor'));
                         const form = document.getElementById('deleteFormProfesor');                                                
                         modal.show();
                         form.action = `/profesores/${profesor.id}`; // Asegurate de que la ruta coincida con la definida en web.php    
-                        modal.classList.remove('hidden');
-                        modal.classList.add('flex');
+                        //modal.classList.remove('hidden');
+                        //modal.classList.add('flex');
                     }
                 </script>
                 @else
