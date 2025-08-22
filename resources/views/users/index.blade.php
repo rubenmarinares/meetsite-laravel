@@ -19,7 +19,7 @@
         <div class="card-header d-flex align-items-center justify-content-between">
             <h4 class="card-title"><i class="{{$menuitems[$imenu1]['submenu'][$imenu2]['icon']}}"></i>&nbsp;{{$menuitems[$imenu1]['submenu'][$imenu2]['label']}}</h4>
             <div class="card-header-action">
-                <a href="{{route('users.create')}}" class="btn btn-sm btn-primary ajax-sidepanel"><i class="fa-solid fa-plus"></i>&nbsp;{{$menuitems[$imenu1]['submenu'][$imenu2]['label']}}</a>
+                <a href="{{route('users.create')}}" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i>&nbsp;{{$menuitems[$imenu1]['submenu'][$imenu2]['label']}}</a>
             </div>
         </div>
 
