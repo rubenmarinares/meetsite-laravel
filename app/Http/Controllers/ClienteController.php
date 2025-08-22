@@ -71,45 +71,6 @@ class ClienteController extends Controller
         return view('clientes.create', $vars);        
     }
 
-    /*
-    public function create():View{
-        $user = Auth::user();
-        if($user->hasRole('super-admin')){
-            $academias=Academia::query()->orderByRaw('academia')->get();
-        
-        }else{
-            $academias = Academia::query()
-                ->whereHas('users', function ($query) use ($user) {
-                    $query->where('users.id', $user->id);
-                })
-                ->orderByRaw('academia')->get();
-        }   
-
-        $alumnosSelected = Alumno::whereHas('academiasRelation', function ($query) use ($academias) {
-            $query->whereIn('academiaid', $academias->pluck('id'));
-            })
-            ->select('alumnos.*')                        
-            ->distinct()
-            ->get();
-        
-                
-
-        return view('clientes.create',[
-            'cliente'=>new Cliente(),
-            'submitButtonText'=>'Crear Cliente',
-            'actionUrl'=>route('clientes.store'),
-            //'properties'=>Cliente::propertiesDefault(),
-            'method'=>'POST',
-            'h2Label'=>'Crear Cliente',            
-            'academiasSeleccionadas'=>array(),
-            'academias'=>$academias,
-            'alumnosSelected'=>$alumnosSelected ?? [],
-        ]);
-    
-    }
-
-    */
-
     public function store(ClienteRequest $request){
 
         
@@ -253,6 +214,48 @@ class ClienteController extends Controller
         return redirect()->to($redirectUrl);
     }
 
+
+
+    
+    /*
+    public function create():View{
+        $user = Auth::user();
+        if($user->hasRole('super-admin')){
+            $academias=Academia::query()->orderByRaw('academia')->get();
+        
+        }else{
+            $academias = Academia::query()
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('users.id', $user->id);
+                })
+                ->orderByRaw('academia')->get();
+        }   
+
+        $alumnosSelected = Alumno::whereHas('academiasRelation', function ($query) use ($academias) {
+            $query->whereIn('academiaid', $academias->pluck('id'));
+            })
+            ->select('alumnos.*')                        
+            ->distinct()
+            ->get();
+        
+                
+
+        return view('clientes.create',[
+            'cliente'=>new Cliente(),
+            'submitButtonText'=>'Crear Cliente',
+            'actionUrl'=>route('clientes.store'),
+            //'properties'=>Cliente::propertiesDefault(),
+            'method'=>'POST',
+            'h2Label'=>'Crear Cliente',            
+            'academiasSeleccionadas'=>array(),
+            'academias'=>$academias,
+            'alumnosSelected'=>$alumnosSelected ?? [],
+        ]);
+    
+    }
+
+    */
+    
 
     
     /*public function store(ClienteRequest $request): RedirectResponse{

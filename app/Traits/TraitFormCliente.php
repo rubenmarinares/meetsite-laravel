@@ -24,8 +24,11 @@ trait TraitFormCliente
                 ->orderByRaw('academia')->get();
         }        
             
-        //var_dump($data["properties"]);
+        
+        
         if(isset($data['cliente']) && $data['cliente'] instanceof Cliente && $data['cliente']->exists){ //EDICIÓN            
+            
+
             
             $cliente = $data['cliente'];
             //$properties=json_decode($cliente["properties"],true);
@@ -34,6 +37,8 @@ trait TraitFormCliente
             $submitButtonText = 'Actualizar Cliente';
 
             $clienteId = $cliente->id;
+            $academias = Academia::where('id', session('academia_set')->id)->get();
+            
             $alumnosSelected = Alumno::whereHas('academiasRelation', function ($query) use ($academias) {
                                     $query->whereIn('academiaid', $academias->pluck('id'));
                                 })
@@ -50,13 +55,15 @@ trait TraitFormCliente
             $alumnosPreSelected = $data['alumnosPreSelected'] ?? [];
         }else{ //CREACIÓN
                         
+            //var_export(session('academia_set')->id);
+            $academias = Academia::where('id', session('academia_set')->id)->get();
             $cliente = new Cliente();
             $method = 'POST';
             $actionUrl = route('clientes.store');            
             $submitButtonText = 'Crear Cliente';
-            $alumnosPreSelected = $data['alumnosPreSelected'] ?? [];
+            $alumnosPreSelected = $data['alumnosPreSelected'] ?? [];            
             $alumnosSelected = Alumno::whereHas('academiasRelation', function ($query) use ($academias) {
-                $query->whereIn('academiaid', $academias->pluck('id'));
+                 $query->whereIn('academiaid', $academias->pluck('id')->toArray());
                 })
                 ->select('alumnos.id', 'alumnos.nombre', 'alumnos.apellidos')
                 ->distinct()

@@ -77,7 +77,7 @@
                   <div class="card-header d-flex align-items-center justify-content-between">
                     <h4 class="card-title"><i class="fas fa-school"></i>&nbsp;Academia</h4>
                     <div class="card-header-action">
-                      <a href="{{route('academias.edit',$academia)}}" class="btn btn-sm btn-primary ajax-sidepanel"><i class="fa-solid fa-pencil"></i>&nbsp;Editar </a>
+                      <a href="{{route('academias.edit',$academia)}}" class="btn btn-sm btn-primary"><i class="fa-solid fa-pencil"></i>&nbsp;Editar </a>
                     </div>                    
                   </div>
                   <div class="card-body">

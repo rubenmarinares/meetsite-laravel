@@ -82,6 +82,8 @@ class ClienteRequest extends FormRequest
         if($this->isMethod('put')){ //UPDATE  
             $vars['cliente'] = $this->route('cliente');
             $vars['academiasSeleccionadas'] = $this->input('academias', []);
+            $vars['alumnosPreSelected'] = $this->input('alumnos', []);
+            var_dump($vars['alumnosPreSelected']);
             $formVars = TraitFormCliente::formularioCliente($vars);
             $formVars['sidepanel'] = true;
             $formVars['cliente'] =$this->route('cliente');                       
