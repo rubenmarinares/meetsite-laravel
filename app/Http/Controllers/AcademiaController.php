@@ -21,9 +21,7 @@ class AcademiaController extends Controller
     {
         $this->authorizeResource(Academia::class);
     }
-    
-    
-
+        
     public function index():View{
 
         $user = Auth::user();
@@ -100,7 +98,6 @@ class AcademiaController extends Controller
     
     public function setAcademia(Academia $academia): RedirectResponse{
 
-
         $this->authorize('setAcademia', $academia); // Esto llama a la policy
 
         $user = Auth::user();    
@@ -111,12 +108,8 @@ class AcademiaController extends Controller
         //Añadimos academias actuallizadas a la sesión
         $academias = $user->academias();
         session()->put('user_academias', $academias);
-
         session()->flash('success_messages', ['Academia seleccionada correctamente.']);
-
-        return redirect()->route('academias.view',$academiaSet);
-        
-
+        return redirect()->route('academias.view',$academiaSet);        
     }
 
     

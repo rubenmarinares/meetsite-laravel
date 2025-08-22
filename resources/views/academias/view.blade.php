@@ -21,6 +21,8 @@
           <h2 class="page-title">
             {{$academia->academia}} 
           </h2>
+
+          {{ session('academia_set') }}
         </div>
 
       </div>

@@ -133,7 +133,7 @@ class ProfesorRequest extends FormRequest
 }
 
 //TODO
--Setear la academia en la que estamos cuando entramos en ella
+-Setear la academia en la que estamos cuando entramos en ella--> LISTO
 -Configurar la edición de la academia cuando estamos en el panel principal(sidebar)
 -Filtrar a los alumnos de los clientes linkados por academia
 -Creación del modelo grupos

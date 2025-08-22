@@ -100,7 +100,14 @@
                             </div>
                         </li>
                         </ul>
-                        <a class="btn btn-sm btn-outline-primary mb-2" href="{{route('academias.view',$academia)}}">Ver academia</a>
+                            <!--
+                                <a class="btn btn-sm btn-outline-primary mb-2" href="{{route('academias.view',$academia)}}">Ver academia</a>
+                            -->
+                            <form action="{{ route('academia.set', $academia) }}" method="POST"> 
+                            @csrf               
+                            <button type="submit" class="btn btn-sm btn-outline-primary mb-2" ><span>Ver Academia</span></button>
+                            </form>
+
                     </div>
                 </div>
             </div> 
