@@ -189,7 +189,6 @@
 
 
 
-
     </style>
 
 
@@ -327,10 +326,16 @@
 
       menu_click();
       $(".select2").select2({theme: 'bootstrap-5'});
-
-      
+            
       function renderPlugins(){
-        $(".select2").select2({theme: 'bootstrap-5'});
+        $(".select2").select2({theme: 'bootstrap-5'});  
+        Array.from(document.getElementsByClassName("pc-datepicker")).forEach((item) => {
+        picker = new Datepicker(item, {
+          format:'dd/mm/yyyy',
+          buttonClass: 'btn',
+          language: 'es'
+        });
+      });
         
       }
 
@@ -405,7 +410,8 @@
         if (form.action.includes('/alumnos')) {tab=2}
         if (form.action.includes('/asignaturas')) {tab=3}
         if (form.action.includes('/aulas')) {tab=4}
-        if (form.action.includes('/clientes')) {tab=5}        
+        if (form.action.includes('/clientes')) {tab=5}
+        if (form.action.includes('/grupos')) {tab=6}
 
         fetch(form.action, {
           method: form.method,

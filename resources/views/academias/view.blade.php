@@ -67,6 +67,11 @@
                       <span class="d-flex align-items-center gap-2"><i class="fas fa-user-tag"></i>Clientes <span class="badge text-bg-primary">{{ count($clientes) ?? 0 }}</span></span>
                   </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link @if($tab==6) active @endif" id="academias-tab-6" data-bs-toggle="tab" data-bs-target="#academias-tab-6-pane" type="button" role="tab" aria-controls="analytics-tab-6-pane" aria-selected="false" tabindex="-1">
+                      <span class="d-flex align-items-center gap-2"><i class="fas fa-folder"></i>Grupos <span class="badge text-bg-primary">{{ count($grupos) ?? 0 }}</span></span>
+                  </button>
+                </li>
             </ul>
             
             <div class="tab-content">
@@ -119,6 +124,14 @@
               <div class="tab-pane fade  @if($tab==5) active show @endif " id="academias-tab-5-pane" role="tabpanel" aria-labelledby="academias-tab-5" tabindex="5">
                 <div class="card mt-2">                  
                   @include('clientes.index')
+                </div>
+              </div>
+              <!--FIN PANEL CLIENTES-->
+
+              <!--PANEL CLIENTES-->
+              <div class="tab-pane fade  @if($tab==6) active show @endif " id="academias-tab-6-pane" role="tabpanel" aria-labelledby="academias-tab-6" tabindex="6">
+                <div class="card mt-2">                  
+                  @include('grupos.index')
                 </div>
               </div>
               <!--FIN PANEL CLIENTES-->

@@ -43,6 +43,7 @@ class ViewServiceProvider extends ServiceProvider
                             3=> ['label'=> 'Asignaturas', 'icon'=> 'fa-solid fa-book-bookmark', 'url'=> 'asignaturas' ],
                             4=> ['label'=> 'Aulas', 'icon'=> 'fa-solid fa-chalkboard-user', 'url'=> 'aulas' ],
                             5=> ['label'=> 'Clientes', 'icon'=> 'fas fa-user-tag', 'url'=> 'clientes' ],
+                            10=> ['label'=> 'Grupos', 'icon'=> 'fa-regular fa-folder', 'url'=> 'grupos' ],
                             7=> ['label'=> 'Usuarios', 'icon'=> 'fas fa-users', 'url'=> 'users' ],                            
                             6=> ['label'=> 'Roles', 'icon'=> 'fa-solid fa-tags', 'url'=> 'roles' ],
                             9=> ['label'=> 'Permisos', 'icon'=> 'fa-solid fa-tags', 'url'=> 'permissions' ],
@@ -79,7 +80,8 @@ class ViewServiceProvider extends ServiceProvider
                             3=> ['label'=> 'Asignaturas', 'icon'=> 'fa-solid fa-book-bookmark', 'url'=> 'asignaturas' ],
                             4=> ['label'=> 'Aulas', 'icon'=> 'fa-solid fa-chalkboard-user', 'url'=> 'aulas' ],
                             5=> ['label'=> 'Clientes', 'icon'=> 'fas fa-user-tag', 'url'=> 'clientes' ],
-                            7=> ['label'=> 'Usuarios', 'icon'=> 'fas fa-users', 'url'=> 'users' ]                            
+                            10=> ['label'=> 'Grupos', 'icon'=> 'fas fa-folder', 'url'=> 'grupos' ],                           
+                            7=> ['label'=> 'Usuarios', 'icon'=> 'fas fa-users', 'url'=> 'users' ],                            
                         ],
                     ],                 
                     3=> [ 'label'=> 'Tareas', 'icon'=> 'fas fa-tasks', 'url'=> 'tasks' 

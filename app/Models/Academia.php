@@ -69,6 +69,10 @@ class Academia extends Model
         //return $this->belongsToMany(Cliente::class, 'academias_clientes', 'clienteid', 'academiaid');
     }
 
+    public function grupos(){
+        return $this->belongsToMany(Grupo::class,'academias_grupos','academiaid','grupoid');
+    }
+
 
     /*public function academiasRelation(){                
         return $this->belongsToMany(Academia::class, 'academias_clientes', 'clienteid', 'academiaid');
@@ -89,6 +93,7 @@ class Academia extends Model
             $academia->alumnos()->detach();
             $academia->asignaturas()->detach();
             $academia->aulas()->detach();
+            $academia->grupos()->detach();
             $academia->clientes()->detach();
         });
         

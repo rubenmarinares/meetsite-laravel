@@ -134,3 +134,15 @@ Route::post('clientes',[ClienteController::class,'store'])->name('clientes.store
 Route::get('clientes/{cliente}/edit',[ClienteController::class,'edit'])->name('clientes.edit')->middleware('auth');
 Route::put('clientes/{cliente}',[ClienteController::class,'update'])->name('clientes.update')->middleware('auth');
 Route::delete('clientes/{cliente}',[ClienteController::class,'destroy'])->name('clientes.destroy')->middleware('auth'); 
+
+
+
+//ROUTES FOR Grupos
+use App\Http\Controllers\GrupoController;
+Route::get('/grupos', [GrupoController::class, 'index'])->name('grupos.index')->middleware('auth');
+Route::get('/grupos/{grupo}/view', [GrupoController::class, 'view'])->name('grupos.view')->middleware('auth');
+Route::get('grupos/create',[GrupoController::class,'create'])->name('grupos.create')->middleware('auth');
+Route::post('grupos',[GrupoController::class,'store'])->name('grupos.store')->middleware('auth');
+Route::get('grupos/{grupo}/edit',[GrupoController::class,'edit'])->name('grupos.edit')->middleware('auth');
+Route::put('grupos/{grupo}',[GrupoController::class,'update'])->name('grupos.update')->middleware('auth');
+Route::delete('grupos/{grupo}',[GrupoController::class,'destroy'])->name('grupos.destroy')->middleware('auth'); 

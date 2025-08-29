@@ -71,7 +71,8 @@ class AcademiaController extends Controller
         $alumnos = $academia->alumnos()->orderByRaw('nombre')->get();
         $asignaturas = $academia->asignaturas()->orderByRaw('asignatura')->get();
         $aulas = $academia->aulas()->orderByRaw('aula')->get();
-        $clientes = $academia->clientes()->orderByRaw('nombre')->get(); 
+        $grupos = $academia->grupos()->orderByRaw('grupo')->get();
+        $clientes = $academia->clientes()->orderByRaw('nombre')->get();         
         /*
         $clientes = Cliente::whereHas('academiasRelation', function ($query) use ($user) {
                             $query->whereIn('academiaid', $user->academias()->pluck('id'));
@@ -85,6 +86,7 @@ class AcademiaController extends Controller
             'asignaturas'=>$asignaturas,
             'aulas'=>$aulas,
             'clientes'=>$clientes,
+            'grupos'=>$grupos,
             'sidepanel'=>true,
             'emptyMessage'=>'No hay academias registradas'            
         ]);
