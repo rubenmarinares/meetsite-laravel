@@ -41,7 +41,7 @@ class AulaController extends Controller
         
         $user = Auth::user();
 
-        if($user->hasRole('super-admin')){
+        /*if($user->hasRole('super-admin')){
             $aulas=Aula::query()->orderByRaw('aula')->get();
         }else{            
                 
@@ -49,6 +49,11 @@ class AulaController extends Controller
                             $query->whereIn('academiaid', $user->academias()->pluck('id'));
                         })->get();
         }
+        */
+
+        $aulas = Aula::whereHas('academiasRelation', function ($query)  {
+                            $query->where('academiaid', session('academia_set')->id);
+                        })->get();
 
         foreach($aulas as $aula){            
             $aula->properties=json_decode($aula->properties,true);

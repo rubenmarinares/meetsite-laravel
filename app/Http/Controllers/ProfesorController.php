@@ -34,6 +34,7 @@ class ProfesorController extends Controller
     public function index()
     {        
         $user = Auth::user();
+        /*        
         if($user->hasRole('super-admin')){
             $profesores=Profesor::query()->orderByRaw('nombre')->get();
         }else{            
@@ -41,6 +42,14 @@ class ProfesorController extends Controller
                             $query->whereIn('academiaid', $user->academias()->pluck('id'));
                         })->get();
         }
+*/
+        
+        $profesores = Profesor::whereHas('academiasRelation', function ($query)  {
+                            $query->where('academiaid', session('academia_set')->id);
+                        })->get();
+        
+
+        //echo "ACADEMIA".session('academia_set')->id;
         return view('profesores.index',[
             'profesores'=>$profesores,
             'emptyMessage'=>'No hay profesores registrados',

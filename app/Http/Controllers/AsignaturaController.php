@@ -36,14 +36,20 @@ class AsignaturaController extends Controller
     public function index()
     {        
         $user = Auth::user();
-        if($user->hasRole('super-admin')){
+        /*if($user->hasRole('super-admin')){
             $asignaturas=Asignatura::query()->orderByRaw('asignatura')->get();
         }else{            
                 
             $asignaturas = Asignatura::whereHas('academiasRelation', function ($query) use ($user) {
                             $query->whereIn('academiaid', $user->academias()->pluck('id'));
                         })->get();
-        }        
+        } */       
+
+
+        $asignaturas = Asignatura::whereHas('academiasRelation', function ($query)  {
+                            $query->where('academiaid', session('academia_set')->id);
+                        })->get();
+
         return view('asignaturas.index',[
             'asignaturas'=>$asignaturas,
             'emptyMessage'=>'No hay asignaturas registrados',

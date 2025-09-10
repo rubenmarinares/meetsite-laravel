@@ -35,14 +35,20 @@ class AlumnoController extends Controller
     {        
         $user = Auth::user();
 
-        if($user->hasRole('super-admin')){
+        /*if($user->hasRole('super-admin')){
             $alumnos=Alumno::query()->orderByRaw('nombre')->get();
         }else{            
                 
             $alumnos = Alumno::whereHas('academiasRelation', function ($query) use ($user) {
                             $query->whereIn('academiaid', $user->academias()->pluck('id'));
                         })->get();
-        }        
+        } 
+        */       
+
+        $alumnos = Alumno::whereHas('academiasRelation', function ($query)  {
+                            $query->where('academiaid', session('academia_set')->id);
+                        })->get();
+
         return view('alumnos.index',[
             'alumnos'=>$alumnos,
             'emptyMessage'=>'No hay Alumnos registrados',
