@@ -100,7 +100,39 @@ foreach ($dias as $index => $dia) {
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @enderror            
         </div>
+
+        <div class="col-md-6">
+            <label for="profesores" class="form-label">Profesor </label>
+            <select name="properties[profesor]" class="form-control " >
+                <option></option>
+                @foreach ($profesores as $profesor)
+                    <option value="{{ $profesor->id }}" 
+                        {{ isset($properties["profesor"]) && $properties["profesor"]==intval($profesor->id) ? 'selected' : '' }}>
+                        {{ $profesor->nombre }}  {{ $profesor->apellidos }} 
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
     </div>
+
+    <script>
+document.addEventListener("change", function(e) {
+    if (e.target.matches("input[type='checkbox'][id^='dia']")) {
+        let row = e.target.closest("tr");
+        let inputs = row.querySelectorAll("input[type='time'], select");
+
+        if (!e.target.checked) {
+            inputs.forEach(el => {
+                el.value = '';
+                el.setAttribute('disabled', 'disabled');
+            });
+        } else {
+            inputs.forEach(el => el.removeAttribute('disabled'));
+        }
+    }
+});
+</script>
     
     <div class="row mb-3 mt-3">        
         <div class="col-md-12"><h5 class="mt-3">Horarios</h5>
@@ -118,6 +150,7 @@ foreach ($dias as $index => $dia) {
                     <tr>
                         <td><input id="dia{{ $index }}" type="checkbox" name="properties[dias][{{$index}}]" value="1" 
                             {{ isset($properties["dias"][$index]) ? 'checked' : '' }}
+                            
                             >                            
                             <label for="dia{{ $index }}"> {{$horario["dia"]}} </label></td>
                         <td>                            
@@ -147,6 +180,7 @@ foreach ($dias as $index => $dia) {
             </table>
         </div>          
     </div>
+    
     
     <div class="d-flex justify-content-end">
         <button type="submit" class="btn btn-primary">

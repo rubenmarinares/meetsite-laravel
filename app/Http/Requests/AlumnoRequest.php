@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +14,16 @@ use App\Traits\TraitFormAlumno;
 
 
 
+/**
+ * Class AlumnoRequest
+ *
+ * @method array all($keys = null)        Obtener todos los datos del request
+ * @method mixed input($key = null, $default = null) Obtener un campo específico
+ * @method bool isMethod(string $method)  Verificar el método HTTP (GET, POST, PUT...)
+ * @method mixed route($param = null, $default = null) Obtener parámetro de la ruta
+ *
+ * @property-read array $errors           Acceso al bag de errores
+ */
  
 
 class AlumnoRequest extends FormRequest
@@ -74,8 +83,7 @@ class AlumnoRequest extends FormRequest
 
 
     public function failedValidation(Validator $validator)
-    {
-        /** @var \Illuminate\Foundation\Http\FormRequest $this */
+    {        
 
         $viewErrors = new ViewErrorBag();
         $viewErrors->put('default', $validator->errors());

@@ -6,6 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 
+/**
+ * Class AcademiaRequest
+ *
+ * @method array all($keys = null)        Obtener todos los datos del request
+ * @method mixed input($key = null, $default = null) Obtener un campo específico
+ * @method bool isMethod(string $method)  Verificar el método HTTP (GET, POST, PUT...)
+ * @method mixed route($param = null, $default = null) Obtener parámetro de la ruta
+ *
+ * @property-read array $errors           Acceso al bag de errores
+ */
+
 class AcademiaRequest extends FormRequest
 {
     /**
@@ -16,16 +27,12 @@ class AcademiaRequest extends FormRequest
         return true;
     }
 
-    public function attributes()
+    /*public function attributes()
     {
        return trans('academia.attributes');
-    }
+    }*/
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
+    
     public function rules(): array
     {
         return [

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -12,10 +13,18 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\ViewErrorBag;
 use App\Traits\TraitFormProfesor;
 
-/**
- * @method mixed route(string $name = null, mixed $default = null)
- */
 
+
+/**
+ * Class ProfesorRequest
+ *
+ * @method array all($keys = null)        Obtener todos los datos del request
+ * @method mixed input($key = null, $default = null) Obtener un campo específico
+ * @method bool isMethod(string $method)  Verificar el método HTTP (GET, POST, PUT...)
+ * @method mixed route($param = null, $default = null) Obtener parámetro de la ruta
+ *
+ * @property-read array $errors           Acceso al bag de errores
+ */
 class ProfesorRequest extends FormRequest
 {
     use TraitFormProfesor;
@@ -35,8 +44,8 @@ class ProfesorRequest extends FormRequest
     public function rules(): array
     {
         
-
-        $user = auth()->user();
+        
+        $user = Auth::user();
 
         $profesor = $this->route('profesor');
 
@@ -71,8 +80,7 @@ class ProfesorRequest extends FormRequest
 
     
     public function failedValidation(Validator $validator)
-    {
-        /** @var \Illuminate\Foundation\Http\FormRequest $this */
+    {        
 
         $viewErrors = new ViewErrorBag();
         $viewErrors->put('default', $validator->errors());

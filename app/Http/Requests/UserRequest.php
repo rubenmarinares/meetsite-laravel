@@ -5,8 +5,20 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Auth;
 
 
+
+/**
+ * Class UserRequest
+ *
+ * @method array all($keys = null)        Obtener todos los datos del request
+ * @method mixed input($key = null, $default = null) Obtener un campo específico
+ * @method bool isMethod(string $method)  Verificar el método HTTP (GET, POST, PUT...)
+ * @method mixed route($param = null, $default = null) Obtener parámetro de la ruta
+ *
+ * @property-read array $errors           Acceso al bag de errores
+ */
 
 class UserRequest extends FormRequest
 {
@@ -27,9 +39,9 @@ class UserRequest extends FormRequest
         $isCreating = request()->isMethod('post');
         // If the request is for creating a new user, 'required' is needed for password
 
-         $userAuth = auth()->user();
+        $user = Auth::user();
 
-        $isNotSuperAdmin = !$userAuth || !$userAuth->hasRole('super-admin');
+        $isNotSuperAdmin = !$user || !$user->hasRole('super-admin');
 
         
 

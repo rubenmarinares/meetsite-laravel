@@ -12,6 +12,18 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\ViewErrorBag;
 use App\Traits\TraitFormGrupo;
 
+
+/**
+ * Class GrupoRequest
+ *
+ * @method array all($keys = null)        Obtener todos los datos del request
+ * @method mixed input($key = null, $default = null) Obtener un campo específico
+ * @method bool isMethod(string $method)  Verificar el método HTTP (GET, POST, PUT...)
+ * @method mixed route($param = null, $default = null) Obtener parámetro de la ruta
+ *
+ * @property-read array $errors           Acceso al bag de errores
+ */
+
 class GrupoRequest extends FormRequest
 {
     /**
@@ -65,18 +77,10 @@ class GrupoRequest extends FormRequest
 
     public function failedValidation(Validator $validator)
     {
-        
-
         $viewErrors = new ViewErrorBag();
         $viewErrors->put('default', $validator->errors());
-        
-        //$vars = $this->validated();
-        $vars=$this->all();
-
-        //VALORES POR DEFECTO
-        //$vars['color'] = $this->input('color', '#FFFFFF');
-        //$vars['textcolor'] = $this->input('textcolor', '#000000');
-        
+                
+        $vars=$this->all();        
         if($this->isMethod('put')){ //UPDATE  
             $vars['grupo'] = $this->route('grupo');
             $vars['academiasSeleccionadas'] = $this->input('academias', []);

@@ -146,3 +146,10 @@ Route::post('grupos',[GrupoController::class,'store'])->name('grupos.store')->mi
 Route::get('grupos/{grupo}/edit',[GrupoController::class,'edit'])->name('grupos.edit')->middleware('auth');
 Route::put('grupos/{grupo}',[GrupoController::class,'update'])->name('grupos.update')->middleware('auth');
 Route::delete('grupos/{grupo}',[GrupoController::class,'destroy'])->name('grupos.destroy')->middleware('auth'); 
+
+
+//ROUTE FOR CALENDARIO
+use App\Http\Controllers\CalendarioController;
+//Route::get('/calendario', [CalendarioController::class, 'index'])->name('calendario.index')->middleware('auth');
+Route::get('/calendario', [CalendarioController::class, 'index'])->name('calendario.index')->middleware('auth');;
+Route::get('/calendario/events', [CalendarioController::class, 'events'])->name('calendario.events');

@@ -1,5 +1,5 @@
 <?php
 return [
-    'failed' => 'Estas credenciales no coinciden con nuestros registros. Espanol',
+    'failed' => 'Estas credenciales no son válidas. ES',
     // Otros mensajes...
 ];

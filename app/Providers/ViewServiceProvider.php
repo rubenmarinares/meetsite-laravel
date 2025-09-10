@@ -48,13 +48,7 @@ class ViewServiceProvider extends ServiceProvider
                             6=> ['label'=> 'Roles', 'icon'=> 'fa-solid fa-tags', 'url'=> 'roles' ],
                             9=> ['label'=> 'Permisos', 'icon'=> 'fa-solid fa-tags', 'url'=> 'permissions' ],
                         ],
-                    ],
-                    3=> [ 'label'=> 'Tareas', 'icon'=> 'fas fa-tasks', 'url'=> 'tasks' 
-                        ,'submenu'=> [
-                            0 => ['label'=> 'Calendario', 'icon'=> 'fas fa-calendar', 'url'=> 'tasks/calendar' ],
-                            1 => ['label'=> 'Tareas', 'icon'=> 'fas fa-tasks', 'url'=> 'tasks' ],
-                        ],
-                    ],  
+                    ],                   
                     4=> [ 'label'=> 'Financiero', 'icon'=> 'fas fa-coins', 'url'=> 'accounting/index' 
                         ,'submenu'=> [
                             0 => ['label'=> 'Resumen', 'icon'=> 'fas fa-tachometer-alt', 'url'=> 'accounting/index' ],
@@ -83,13 +77,7 @@ class ViewServiceProvider extends ServiceProvider
                             10=> ['label'=> 'Grupos', 'icon'=> 'fas fa-folder', 'url'=> 'grupos' ],                           
                             7=> ['label'=> 'Usuarios', 'icon'=> 'fas fa-users', 'url'=> 'users' ],                            
                         ],
-                    ],                 
-                    3=> [ 'label'=> 'Tareas', 'icon'=> 'fas fa-tasks', 'url'=> 'tasks' 
-                        ,'submenu'=> [
-                            0=>['label'=> 'Calendario', 'icon'=> 'fas fa-calendar', 'url'=> 'tasks/calendar' ],
-                            1=>['label'=> 'Tareas', 'icon'=> 'fas fa-tasks', 'url'=> 'tasks' ],
-                        ],
-                    ],  
+                    ],                                     
                     4=> [ 'label'=> 'Financiero', 'icon'=> 'fas fa-coins', 'url'=> 'accounting/index' 
                         ,'submenu'=> [
                             0=> ['label'=> 'Resumen', 'icon'=> 'fas fa-tachometer-alt', 'url'=> 'accounting/index' ],

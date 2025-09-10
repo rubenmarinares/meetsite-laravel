@@ -21,6 +21,8 @@ use App\Traits\TraitFormGrupo;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
+use App\Traits\TraitFunctions;
+
 class GrupoController extends Controller
 {
 
@@ -34,18 +36,15 @@ class GrupoController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
+        
+        
 
-        if($user->hasRole('super-admin')){
-            $grupos=Grupo::query()->orderByRaw('grupo')->get();
-        }else{            
-                
-            $grupos = Grupo::whereHas('academiasRelation', function ($query) use ($user) {
-                            $query->whereIn('academiaid', $user->academias()->pluck('id'));
-                        })
-                        ->orderByRaw('grupo')
-                        ->get();
-        }        
+        $grupos = Grupo::whereHas('academiasRelation', function ($query) {
+            $query->where('academiaid', session('academia_set')->id);
+        })
+        ->orderBy('grupo')
+        ->get();
+
         return view('grupos.index',[
             'grupos'=>$grupos,
             'emptyMessage'=>'No hay Grupos registrados',
@@ -55,7 +54,7 @@ class GrupoController extends Controller
 
     public function create():View{
         $vars = TraitFormGrupo::formularioGrupo();
-        //$var['sidepanel']=request('sidepanel', false);
+        $var['sidepanel']=request('sidepanel', false);
         return view('grupos.create', $vars);        
     }
 
@@ -64,11 +63,10 @@ class GrupoController extends Controller
         try {
             DB::beginTransaction();
             $validated=($request->validated());
-            $validated["properties"] = json_encode($request["properties"]);
-            list($dia, $mes, $anio) = explode("/", $validated["fechainicio"]);
-            $validated["fechainicio"] = $anio . $mes . $dia;
-            list($dia, $mes, $anio) = explode("/", $validated["fechafin"]);
-            $validated["fechafin"] = $anio . $mes . $dia;
+            $validated["properties"] =TraitFunctions::json_encode($request["properties"]);            
+            //FECHAS
+            $validated["fechainicio"] = TraitFunctions::dateToInt($validated["fechainicio"]);
+            $validated["fechafin"] = TraitFunctions::dateToInt($validated["fechafin"]);
 
             
                             
@@ -88,8 +86,10 @@ class GrupoController extends Controller
         }        
     }
 
-    public function edit(Grupo $grupo) : View{        
+    public function edit(Grupo $grupo) : View{
+        
         $var['sidepanel']=request('sidepanel', false);
+        //$var['sidepanel']=false;
         $var['grupo']=$grupo;
         $var['academiasSeleccionadas']=$grupo->academiasRelation->pluck('id')->toArray();
 
@@ -103,11 +103,12 @@ class GrupoController extends Controller
         try {
             DB::beginTransaction();            
             $validated=($request->validated());
-            $validated["properties"] = json_encode($request["properties"]);
-            list($dia, $mes, $anio) = explode("/", $validated["fechainicio"]);
-            $validated["fechainicio"] = $anio . $mes . $dia;
-            list($dia, $mes, $anio) = explode("/", $validated["fechafin"]);
-            $validated["fechafin"] = $anio . $mes . $dia;
+            //$validated["properties"] = json_encode($request["properties"]);
+            $validated["properties"] =TraitFunctions::json_encode($request["properties"]);
+
+            //FECHAS
+            $validated["fechainicio"] = TraitFunctions::dateToInt($validated["fechainicio"]);
+            $validated["fechafin"] = TraitFunctions::dateToInt($validated["fechafin"]);
 
             $grupo->update($validated);
             $grupo->academiasRelation()->sync($request['academias'] ?? []);

@@ -14,6 +14,19 @@ use Illuminate\Support\ViewErrorBag;
 use App\Traits\TraitFormAsignatura;
 
 
+
+/**
+ * Class AsignaturaRequest
+ *
+ * @method array all($keys = null)        Obtener todos los datos del request
+ * @method mixed input($key = null, $default = null) Obtener un campo específico
+ * @method bool isMethod(string $method)  Verificar el método HTTP (GET, POST, PUT...)
+ * @method mixed route($param = null, $default = null) Obtener parámetro de la ruta
+ *
+ * @property-read array $errors           Acceso al bag de errores
+ */
+ 
+
 class AsignaturaRequest extends FormRequest
 {
     /**

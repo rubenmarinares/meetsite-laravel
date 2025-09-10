@@ -2,13 +2,11 @@
 
 namespace App\Traits;
 
+use App\Traits\TraitFunctions;
 use App\Models\Academia;
 use App\Models\Aula;
+use App\Models\Profesor;
 use App\Models\Grupo;
-use Illuminate\Support\Facades\Auth;
-
-use Carbon\Carbon;
-
 trait TraitFormGrupo
 {
     static function formularioGrupo(array $data = []): array
@@ -19,16 +17,21 @@ trait TraitFormGrupo
             $query->where('academiaid', session('academia_set')->id);
         })->get();
 
+        $profesores = Profesor::whereHas('academiasRelation', function ($query) {
+            $query->where('academiaid', session('academia_set')->id);
+        })->get();
+
         $data["properties"] = $data["properties"] ?? [];
-        if (is_string($data["properties"])) {            
-            $properties = json_decode($data["properties"], true);
+        if (is_string($data["properties"])) {
+            $properties=TraitFunctions::json_decode($data["properties"], true);
         } else {            
             $properties = $data["properties"]; // ya es array
         }
-                        
+                 
         if(isset($data['grupo']) && $data['grupo'] instanceof Grupo && $data['grupo']->exists){ //EDICIÓN            
-            $grupo = $data['grupo'];            
-            $grupo->properties = json_decode($grupo->properties, true);
+            $grupo = $data['grupo'];                        
+            $grupo->properties = TraitFunctions::json_decode($grupo->properties, true);
+
             $properties = array_merge($grupo->properties ?? [], $properties ?? []);
 
             $method = 'PUT';
@@ -36,12 +39,8 @@ trait TraitFormGrupo
             $submitButtonText = 'Actualizar Grupo';
 
             //FECHAS
-            if (!empty($grupo->fechainicio)) {
-                $grupo->fechainicio = Carbon::createFromFormat('Ymd', $grupo->fechainicio)->format('d/m/Y');                
-            }
-            if (!empty($grupo->fechafin)) {
-                $grupo->fechafin = Carbon::createFromFormat('Ymd', $grupo->fechafin)->format('d/m/Y'); 
-            }
+            $grupo->fechainicio = TraitFunctions::intToDate($grupo->fechainicio);
+            $grupo->fechafin = TraitFunctions::intToDate($grupo->fechafin);            
                         
         }else{ //CREACIÓN
             $grupo = new Grupo();      
@@ -52,7 +51,7 @@ trait TraitFormGrupo
             $actionUrl = route('grupos.store');            
             $submitButtonText = 'Crear Grupo';
         }
-        
+
         return [
             'grupo' => $grupo,
             'submitButtonText' => $submitButtonText,
@@ -61,6 +60,7 @@ trait TraitFormGrupo
             'academiasSeleccionadas' => $data['academiasSeleccionadas'] ?? [],            
             'academias' => $academias,
             'aulas' => $aulas,
+            'profesores' => $profesores,
             'data' => $data,
             'properties'=>$properties,
             'sidepanel' => $data['sidepanel'] ?? false,

@@ -355,7 +355,46 @@
         return data?.authenticated === true;
       }
 
+      async function openSidepanel(url) {
+        const isLoggedIn = await checkAuth();
+        if (!isLoggedIn) return;
 
+        fetch(url)
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('sidepanel-body').innerHTML = html;
+
+            var sidepanel = new bootstrap.Offcanvas(document.getElementById('sidepanel'));
+            renderPlugins(document.getElementById('sidepanel'));
+            sidepanel.show();
+
+            // Cargar los <script> que vengan en el HTML
+            let scripts = document.getElementById('sidepanel-body').querySelectorAll("script");
+            scripts.forEach(script => {
+              let newScript = document.createElement("script");
+              if (script.src) {
+                newScript.src = script.src;
+                newScript.onload = () => console.log("Script cargado:", script.src);
+              } else {
+                newScript.textContent = script.textContent;
+              }
+              document.body.appendChild(newScript);
+              document.body.removeChild(newScript);
+            });
+          })
+          .catch(err => console.warn("Error cargando sidepanel:", err));
+      }
+
+      document.querySelectorAll(".ajax-sidepanel").forEach((item) => {
+        item.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          openSidepanel(item.getAttribute("href"));
+          return false;
+        });
+      });
+
+      /*
       document.querySelectorAll(".ajax-sidepanel").forEach((item) => {
         item.addEventListener("click",async function (e) {
           e.preventDefault();
@@ -371,9 +410,8 @@
               document.getElementById('sidepanel-body').innerHTML=html;
               var sidepanel = new bootstrap.Offcanvas(document.getElementById('sidepanel'))
               renderPlugins(document.getElementById('sidepanel'));
-              sidepanel.show();
-              /*PARA CARGAR LOS SCRIPTS QUE VIENEN EN EL HTML*/
-              /*
+              sidepanel.show();              
+              
               let scripts = document.getElementById('sidepanel-body').querySelectorAll("script");
                 scripts.forEach(script => {
                     let newScript = document.createElement("script");
@@ -386,7 +424,7 @@
                     document.body.appendChild(newScript);
                     document.body.removeChild(newScript);
                 });
-                */
+              
               
           }).catch(function (err) {
             // There was an error
@@ -396,6 +434,7 @@
         return false;
         });
       });
+      */
 
 
       /*ENVÍO DE FORMULARIO DENTRO DE SIDEPANEL*/
