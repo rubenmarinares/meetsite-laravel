@@ -325,19 +325,52 @@
       
 
       menu_click();
-      $(".select2").select2({theme: 'bootstrap-5'});
+      $(".select2").select2({
+          theme: 'bootstrap-5',  
+          width: '100%',
+          language: {
+            noResults: function () {
+                return "No hay registros";
+            }
+          }
+        });
             
       function renderPlugins(){
-        $(".select2").select2({theme: 'bootstrap-5'});  
+        $(".select2").select2({theme: 'bootstrap-5', width: '100%',language: {
+            noResults: function () {
+                return "No hay registros";
+            }
+          }});  
         Array.from(document.getElementsByClassName("pc-datepicker")).forEach((item) => {
-        picker = new Datepicker(item, {
-          format:'dd/mm/yyyy',
-          buttonClass: 'btn',
-          language: 'es'
+                picker = new Datepicker(item, {
+                  format:'dd/mm/yyyy',
+                  buttonClass: 'btn',
+                  language: 'es'
+                });
         });
-      });
         
+        
+        /*
+        document.querySelectorAll(".ajax-sidepanel").forEach((item) => {
+          item.addEventListener("click", function (e) {            
+            e.preventDefault();
+            e.stopPropagation();
+            const sidepanelElement = document.getElementById('sidepanel');            
+            if (sidepanelElement) {
+
+                const sidepanelInstance = bootstrap.Offcanvas.getInstance(sidepanelElement);
+                if (sidepanelInstance) {
+                    sidepanelInstance.hide();
+                }
+            }
+            openSidepanel(item.getAttribute("href"));
+            return false;
+          },{ once: true});
+        });
+        
+        */
       }
+
 
 
       async function checkAuth() {
@@ -385,56 +418,43 @@
           .catch(err => console.warn("Error cargando sidepanel:", err));
       }
 
+      /*
       document.querySelectorAll(".ajax-sidepanel").forEach((item) => {
         item.addEventListener("click", function (e) {
+          
           e.preventDefault();
           e.stopPropagation();
+          const sidepanelElement = document.getElementById('sidepanel');
+          if (sidepanelElement) {
+              const sidepanelInstance = bootstrap.Offcanvas.getInstance(sidepanelElement);
+              if (sidepanelInstance) {
+                  sidepanelInstance.hide();
+              }
+          }
+
           openSidepanel(item.getAttribute("href"));
           return false;
         });
       });
-
-      /*
-      document.querySelectorAll(".ajax-sidepanel").forEach((item) => {
-        item.addEventListener("click",async function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          const isLoggedIn = await checkAuth();
-          if (!isLoggedIn) return; 
-
-          //console.log(item.getAttribute("href"));
-          
-          fetch(item.getAttribute("href")).then(function (response) {
-            return response.text();
-          }).then(function (html) {                          
-              document.getElementById('sidepanel-body').innerHTML=html;
-              var sidepanel = new bootstrap.Offcanvas(document.getElementById('sidepanel'))
-              renderPlugins(document.getElementById('sidepanel'));
-              sidepanel.show();              
-              
-              let scripts = document.getElementById('sidepanel-body').querySelectorAll("script");
-                scripts.forEach(script => {
-                    let newScript = document.createElement("script");
-                    if (script.src) {
-                        newScript.src = script.src;  // Si el script tiene "src", lo carga dinámicamente
-                        newScript.onload = () => console.log("Script cargado:", script.src);
-                    } else {
-                        newScript.textContent = script.textContent; // Si es un script inline, lo ejecuta
-                    }
-                    document.body.appendChild(newScript);
-                    document.body.removeChild(newScript);
-                });
-              
-              
-          }).catch(function (err) {
-            // There was an error
-            console.warn('Something went wrong.', err);
-          });
-
-        return false;
-        });
-      });
       */
+
+      document.addEventListener("click", function(e) {
+        const item = e.target.closest(".ajax-sidepanel");
+        if (!item) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const sidepanelElement = document.getElementById('sidepanel');            
+        if (sidepanelElement) {
+          const sidepanelInstance = bootstrap.Offcanvas.getInstance(sidepanelElement);
+          if (sidepanelInstance) {
+            sidepanelInstance.hide();
+          }
+        }
+
+        openSidepanel(item.getAttribute("href"));
+      });
 
 
       /*ENVÍO DE FORMULARIO DENTRO DE SIDEPANEL*/
@@ -484,6 +504,7 @@
       });
 
       document.addEventListener('click', function(e) {
+        
         if (e.target.closest('.close-ajax-sidepanel')) {
             e.preventDefault();
 

@@ -88,7 +88,7 @@ class AcademiaController extends Controller
             'clientes'=>$clientes,
             'grupos'=>$grupos,
             'sidepanel'=>true,
-            'emptyMessage'=>'No hay academias registradas'            
+            'emptyMessage'=>'No hay registros',            
         ]);
 
 

@@ -11,7 +11,7 @@
     <table id="tablelist" class="table table-striped table-bordered dataTable">
         <thead>
                 <tr>
-                    <th scope="col" class="" >Action</th>
+                    <th scope="col" class="" >Acción</th>
                     <th scope="col" class="" >id</th>
                     <th scope="col" class="">Grupo</th>
                     <th scope="col" class="">Inicio</th>

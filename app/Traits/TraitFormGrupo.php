@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Traits\TraitFunctions;
 use App\Models\Academia;
+use App\Models\Alumno;
 use App\Models\Aula;
 use App\Models\Profesor;
 use App\Models\Grupo;
@@ -20,6 +21,13 @@ trait TraitFormGrupo
         $profesores = Profesor::whereHas('academiasRelation', function ($query) {
             $query->where('academiaid', session('academia_set')->id);
         })->get();
+
+        $alumnos = Alumno::whereHas('academiasRelation', function ($query) {
+            $query->where('academiaid', session('academia_set')->id);
+        })
+        ->orderBy('apellidos', 'asc')
+        ->orderBy('nombre', 'asc')
+        ->get();
 
         $data["properties"] = $data["properties"] ?? [];
         if (is_string($data["properties"])) {
@@ -61,6 +69,7 @@ trait TraitFormGrupo
             'academias' => $academias,
             'aulas' => $aulas,
             'profesores' => $profesores,
+            'alumnos' => $alumnos,
             'data' => $data,
             'properties'=>$properties,
             'sidepanel' => $data['sidepanel'] ?? false,
