@@ -78,7 +78,7 @@ class ViewServiceProvider extends ServiceProvider
                             7=> ['label'=> 'Usuarios', 'icon'=> 'fas fa-users', 'url'=> 'users' ],                            
                         ],
                     ],                                     
-                    4=> [ 'label'=> 'Financiero', 'icon'=> 'fas fa-coins', 'url'=> 'accounting/index' 
+                    /*4=> [ 'label'=> 'Financiero', 'icon'=> 'fas fa-coins', 'url'=> 'accounting/index' 
                         ,'submenu'=> [
                             0=> ['label'=> 'Resumen', 'icon'=> 'fas fa-tachometer-alt', 'url'=> 'accounting/index' ],
                             1=>['label'=> 'Facturas Recibidas', 'icon'=> 'fas fa-file-import', 'url'=> 'accounting/in_invoices' ],
@@ -86,7 +86,7 @@ class ViewServiceProvider extends ServiceProvider
                             3=>['label'=> 'Facturas Emitidas', 'icon'=> 'fas fa-file-export', 'url'=> 'accounting/out_invoices' ],
                             4=>['label'=> 'Movimientos Tesoreria', 'icon'=> 'fas fa-cash-register', 'url'=> 'accounting/movements' ],
                         ],
-                    ],                      
+                    ],*/                      
                 ];
             }
 

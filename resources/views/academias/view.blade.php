@@ -22,7 +22,7 @@
             {{$academia->academia}} 
           </h2>
 
-          {{ session('academia_set') }}
+         {{--  {{ session('academia_set') }} --}}  
         </div>
 
       </div>

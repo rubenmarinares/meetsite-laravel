@@ -7,6 +7,7 @@ use App\Http\Controllers\AcademiaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfesorController;
+use App\Http\Controllers\MailController;
 
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
@@ -16,8 +17,11 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController as AuthenticatedSes
 
 
 
+Route::get('/test-email', [MailController::class, 'sendTestEmail']);
+
 Route::get('/', function () {
-    return view('welcome');
+    //return view('welcome');
+    return redirect()->route('login');
 });
 
 

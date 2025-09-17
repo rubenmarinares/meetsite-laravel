@@ -21,9 +21,9 @@
                 <div class="simplebar-content pc-trigger active" style="padding: 10px 0px;">
                     <div style="display:flex; justify-content:center;">
                           <!--<h5>Academia Saber</h5>-->
-                        <a href="{{ route('home') }}">
+                        <!--<a href="{{ route('home') }}">
                           <img src="" title="Logo Academia Saber" class="img-thumbnail" style="max-height:100px;margin:10px;">
-                        </a>
+                        </a>-->
                     </div>
                     <ul class="pc-navbar" style="display: block;">                  
                     @foreach ($menuitems as $key => $item)
