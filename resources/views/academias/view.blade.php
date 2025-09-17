@@ -86,7 +86,48 @@
                     </div>                    
                   </div>
                   <div class="card-body">
-                    <p>Academia: {{$academia->academia}} {{$academia->id}}</p>                    
+
+                    
+                    <div class="row py-2 border-bottom">
+                      <div class="col-3"><strong>Academia</strong></div>
+                      <div class="col-3"> {{$academia->academia}} </div>
+                    </div>
+                    <div class="row py-2 border-bottom">
+                      <div class="col-3"><strong>Dirección</strong></div>
+                      <div class="col-3">{!! nl2br(e($academia->direccion)) !!} </div>
+                    </div>
+                    <div class="row py-2 border-bottom">
+                      <div class="col-3"><strong>Localidad</strong></div>
+                      <div class="col-3"> {{ $academia->localidad}} </div>
+                    </div>
+                    <div class="row py-2 border-bottom">
+                      <div class="col-3"><strong>Activo</strong></div>
+                      <div class="col-3"> {{ $academia->status == 1 ? 'Si': 'No'}} </div>
+                    </div>
+                    <div class="row py-2 border-bottom">
+                      <div class="col-3"><strong>Capacidad</strong></div>
+                      <div class="col-3"> {{ json_decode($academia->properties)->capacidad }} </div>
+                    </div>
+                    <div class="row py-2 border-bottom">
+                      <div class="col-3"><strong>Tipo</strong></div>
+                      <div class="col-3"> {{ json_decode($academia->properties)->tipo }} </div>
+                    </div>
+                    <div class="row py-2 border-bottom">
+                      <div class="col-3"><strong>Razón Social</strong></div>
+                      <div class="col-3"> {{ $academia->razonsocial}} </div>
+                    </div>
+                    <div class="row py-2 border-bottom">
+                      <div class="col-3"><strong>NIF/DNI/CIF</strong></div>
+                      <div class="col-3"> {{ $academia->nif}} </div>
+                    </div>
+                    <div class="row py-2 border-bottom">
+                      <div class="col-3"><strong>Domicilio Fiscal</strong></div>
+                      <div class="col-3">{!! nl2br(e($academia->domiciliofiscal)) !!} </div>
+                    </div>
+
+                    
+                    
+
                   </div>
                 </div>
               </div>

@@ -14,6 +14,9 @@ return [
     'localidad' => 'Localidad',
     'capacidad' => 'Capacidad',
     'tipo' => 'Tipo de Academia',
+    'razonsocial' => 'Razón Social',
+    'nif' => 'NIF / CIF / NIE',
+    'domiciliofiscal' => 'Domicilio Fiscal',    
     'attributes' => [
                     'academia' => 'academia',
                     'direccion' => 'dirección',
@@ -35,6 +38,9 @@ return [
     'capacidad_required' => 'El campo :attribute es obligatorio',
     'capacidad_integer' => 'El campo :attribute debe ser un número entero',
     'tipo_required' => 'El campo :attribute es obligatorio',
+    'razonsocial_required' => 'El campo Razón Social es obligatorio',
+    'nif_required' => 'El campo NIF/CIF/NIE es obligatorio',
+    'domiciliofiscal_required' => 'El campo Domicilio Fiscal es obligatorio',
 
     'messages'=> [
         'success' => 'Academia actualizada con éxito.',

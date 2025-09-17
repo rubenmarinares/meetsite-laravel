@@ -35,16 +35,10 @@ class AcademiaController extends Controller
                 })
                 ->orderByRaw('academia')->get();                                    
         }
-        //MOSTRAR EL NÚMERO DE ALUMNOS QUE  TIENE CADA ACADEMIA
-        /*$academias->each(function($academia){
-            $academia->alumnos_count=$academia->alumnos()->count();
-        });
-        */
         
         foreach($academias as $academia){            
             $academia->properties=json_decode($academia->properties,true);
         }
-        
         //return view('academias.index',compact('academias'));
         return view('academias.index',[
             'academias'=>$academias,
@@ -54,19 +48,12 @@ class AcademiaController extends Controller
     }
 
     public function view(Academia $academia):View{
-
-
-        //$academiaSet = Academia::find($academia->id);
         $user = Auth::user();
-
         $academia= Academia::query()
             ->where('id', $academia->id)
             ->with(['users','alumnos'])
             ->firstOrFail();
-        
 
-
-            
         $profesores = $academia->profesores()->orderByRaw('nombre')->get();
         $alumnos = $academia->alumnos()->orderByRaw('nombre')->get();
         $asignaturas = $academia->asignaturas()->orderByRaw('asignatura')->get();
@@ -135,39 +122,30 @@ class AcademiaController extends Controller
     
     public function edit(Academia $academia) : View{
         
-        return view('academias.edit',[
-        //return view('academias.partials.form',[
+        return view('academias.edit',[        
                         'academia'=>$academia,
                         'submitButtonText'=>'actualizar_academia',
                         'actionUrl'=>route('academias.update',$academia),                        
                         'method'=>'PUT',
                         'properties'=>json_decode($academia["properties"],true),
-                        'tipos' => Academia::tipos(),
-                        //'alumnosSeleccionados'=>$academia->alumnos->pluck('id')->toArray(),
-                        //'alumnos'=>Alumno::query()->orderByRaw('apellidos')->get(),
+                        'tipos' => Academia::tipos(),                        
                         
                     ]);
                 }
                 
     public function update(AcademiaRequest $request,Academia $academia):RedirectResponse{
-                    
         try {
-
-            
-            DB::beginTransaction();
-            
+            DB::beginTransaction();            
             $validated = $request->validated();
             if (!isset($validated['completed'])) {
                 $validated['completed'] = 0;
             }
-
             $validated["properties"] = json_encode($validated["properties"]);
             $academia->update($validated);
             
             //Sincronizamos los alumnos de la academia
             //$academia->alumnos()->sync($request->input('alumnos', [])); // si no vienen, se limpia la relación
             //throw new \Exception('Error forzado'); // Esto sí entra al catch
-
             //Actualizamos desplegable
             $user = Auth::user();
             $academias = $user->academias();
@@ -175,11 +153,8 @@ class AcademiaController extends Controller
             if(session('academia_set')->id==$academia->id){
                 session()->put('academia_set', $academia);
             }
-            
             DB::commit();
-            
             session()->flash('success_messages', [__('academia.messages.success')]);
-            
         } catch (\Exception $e) {
             DB::rollBack(); // Revierte todo
             
@@ -188,25 +163,16 @@ class AcademiaController extends Controller
                 $e->getMessage()
             ]);
         }
-
         return redirect()->route('academias.index');
-        
-        
     }
     
-    public function store(AcademiaRequest $request): RedirectResponse{
-        
+    public function store(AcademiaRequest $request): RedirectResponse{        
         $validated=($request->validated());
         if (!isset($validated['completed'])) {
             $validated['completed'] = 0;
         }
-
         $validated["properties"]=json_encode($validated["properties"]);
-
-
-
         $academia=Academia::create($validated);
-
         //AHORA si el usuario es admin le asignamos la academia
         $userAuth = Auth::user();
         if($userAuth->hasRole('admin')){

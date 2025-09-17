@@ -39,8 +39,8 @@ Route::get('/login', fn() => view('auth.login'))->name('login');
 //Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::post('/login', [AuthenticatedSessionControllerManual::class, 'store'])->middleware(['guest'])->name('login');
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');;
-Route::get('/register', fn() => view('auth.register'))->name('register')->middleware('auth');
-Route::post('/register', [RegisteredUserController::class, 'store']);
+//Route::get('/register', fn() => view('auth.register'))->name('register')->middleware('auth');
+//Route::post('/register', [RegisteredUserController::class, 'store']);
 
 
 //ROUTES FOR USERS

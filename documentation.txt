@@ -137,9 +137,15 @@ class ProfesorRequest extends FormRequest
 -Configurar la edición de la academia cuando estamos en el panel principal(sidebar) -->LISTO
 -Filtrar a los alumnos de los clientes linkados por academia seleccionada -->LISTO
 -Creación del modelo grupos (ESTAMOS EN ELLO)--> AÑADIR ALUMNOS/ PROFESORES / ASIGNATURAS
-
 -FILTRAR COMBO ACADEMIAS DE LOS ELEMENTOS CON EL VALOR SELECCIONADO en SESSION
-
 -Generar calendario
 -Eliminar en el listado genérico de clientes los duplicaod de academias
+
+
+-DATOS FICALES DE ACADEMIAS
+
+
+-Añadir asistencia
+
+
 

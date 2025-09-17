@@ -46,7 +46,8 @@
                             class="btn btn-sm btn-danger"
                             onclick="openDeleteModal({{$academia}})">
                             <i class="fa-solid fa-trash"></i>
-                        </button>                                    
+                            </button>
+                            <a href="{{route('academias.view',$academia->id)}}" title="Ver" class="btn btn-sm" style="background-color:rgb(80, 80, 247);color:#fff;"><i class="fa-solid fa-eye"></i></a> 
                         </td>
                         <td>{{$academia->academia}}</td>
                         <td>{{$academia->direccion}} ({{$academia->localidad}})</td>

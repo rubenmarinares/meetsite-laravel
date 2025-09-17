@@ -17,7 +17,10 @@ class Academia extends Model
         'fecha',
         'properties',
         'direccion',
-        'localidad'
+        'localidad',
+        'nif',
+        'razonsocial',
+        'domiciliofiscal'
     ];
 
 
