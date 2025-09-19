@@ -10,7 +10,7 @@ use App\Http\Controllers\ProfesorController;
 use App\Http\Controllers\MailController;
 
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
-use Laravel\Fortify\Http\Controllers\RegisteredUserController;
+//use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController as AuthenticatedSessionControllerManual;
 
@@ -38,9 +38,15 @@ Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware(
 Route::get('/login', fn() => view('auth.login'))->name('login');
 //Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::post('/login', [AuthenticatedSessionControllerManual::class, 'store'])->middleware(['guest'])->name('login');
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');;
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');
 //Route::get('/register', fn() => view('auth.register'))->name('register')->middleware('auth');
 //Route::post('/register', [RegisteredUserController::class, 'store']);
+//use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
+//Route::get('/forgot-password',[PasswordResetLinkController::class,'create']);
+//Route::post('/forgot-password',[PasswordResetLinkController::class,'store']);
+
+
+
 
 
 //ROUTES FOR USERS

@@ -140,12 +140,78 @@ class ProfesorRequest extends FormRequest
 -FILTRAR COMBO ACADEMIAS DE LOS ELEMENTOS CON EL VALOR SELECCIONADO en SESSION
 -Generar calendario
 -Eliminar en el listado genérico de clientes los duplicaod de academias
+-DATOS FISCALES DE ACADEMIAS
 
 
--DATOS FICALES DE ACADEMIAS
+
+-Restauración de password --> LISTO, Faltan detalles de implementación como mensajes en los distintos steps donde se solicita
+-Asistencia alumnos
+-Comunicaciones
+    generaremos una nueva pestaña de comunicaciones desde donde podremos gestionar la comunicación de nuestra herramienta
+    con los usuarios potenciales(profesore, alumnos, clientes, usuarios)
+
+    Dentro de comunicaciones haremos apartado
+        -plantillas email
+        -emails enviados-->filtros
+        -programar envío
+        -envío de email
+
+            idplantilla
+            nombre
+            created
+
+            Secciones:
+                100%
+                2 columns
+                3 columns
+                4 columns
+            
+                insert("ecb_emails_rows",array(
+                "idrow"=>intval($maxid[0]["idrow"]+1),
+                "idtyperow"=>intval($_REQUEST["idtyperow"]),
+                "properties"=>json_encode($properties),
+                "sort"=>intval($_REQUEST["position"]),
+                "idemail"=>intval($_REQUEST["idemail"])
 
 
--Añadir asistencia
+            Content:
+                Header
+                Image
+                Title
+                Paragraph
+                Button
+                Divider
+                List
+                Html
+                Footer
+
+                $resul=$db->insert("ecb_emails_blocks",array(
+                        "idblock"=>intval($maxid[0]["idblock"]+1),
+                        "idtypeblock"=>intval($_REQUEST["idtypeblock"]),
+                        "idrow"=>intval($_REQUEST["idrow"]),
+                        "col"=>intval($_REQUEST["col"]),
+                        "properties"=>json_encode($properties),
+                        "sort"=>intval($_REQUEST["position"]),
+                        "idemail"=>intval($_REQUEST["idemail"]),
+                    ));
+
+            Concepto de col, que hace referencia en que col se inserta
+
+
+    Plantillas de email:
+        tendremos un listado donde podremos gestionar las plantillas de email 
+            las plantillas de email nos basaremos en la herramienta emailbuilder. 
+
+    Emails enviados->mostraremos el listado de emails que hemos enviado(y ver si se ha leido), podremos entrar en el detalle              
+        para ver a que usuarios se ha enviado
+    
+    Programar envío:
+        Seleccionaremos una plantilla o un texto que enviaremos con la fecha programada(control de fechas, solo lo podremos enviar una vez)
+        No dejaremos enviar más de 15 veces un correo.
+
+
+
+
 
 
 

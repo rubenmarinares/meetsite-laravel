@@ -12,7 +12,11 @@
             <div class="card-body">
                 <h2 class="h5 text-center mb-4" >Datos de acceso MEETSITE</h2>
                     <div class="row">
-
+                      @if(session('status'))
+                        <div class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                    @endif  
                     @if ($errors->any())
                         @foreach($errors->all() as $error)
                             <div class="" role="alert">
@@ -22,32 +26,32 @@
                         @endforeach
                     @endif
                     <form method="POST"  method="POST" action={{route('login')}}>
-                @csrf
-                <div class="form-group">
-                <label for="email">Email</label>
-                <input id="email" type="email" class="form-control" name="email" tabindex="1" required="" autofocus="" aria-invalid="false">
-                <div class="invalid-feedback">
-                    Please fill in your email
-                </div>
-                </div>
-                <div class="form-group">
-                    <div class="d-block">
-                        <label for="password" class="control-label">Contraseña</label>
-                        <input id="password" type="password" class="form-control" name="password" tabindex="2" required="" aria-invalid="false">
-                        <!--<div class="float-right">
-                        <a href="auth-forgot-password.html" class="text-small">
-                            Forgot Password?
-                        </a>
-                        </div>-->
-                    </div>    
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4" style="width:100%;">
-                        Acceder
-                    </button>
-                </div>
-            </form>
-        </div>
+                    @csrf
+                    <div class="form-group">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" class="form-control" name="email" tabindex="1" required="" autofocus="" aria-invalid="false">
+                    <div class="invalid-feedback">
+                        Please fill in your email
+                    </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="d-block">
+                            <label for="password" class="control-label">Contraseña</label>
+                            <input id="password" type="password" class="form-control" name="password" tabindex="2" required="" aria-invalid="false">
+                            <div class="float-right">
+                            <a href="{{ route('password.request') }}" class="text-small">
+                                Recuperar contraseña?
+                            </a>
+                            </div>
+                        </div>    
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4" style="width:100%;">
+                            Acceder
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>    
     
