@@ -205,8 +205,6 @@ class AsistenciaController extends Controller
             return response()->json(['success' => true]);
         }
 
-
-
     public function comentario($grupo, $alumno, $fecha)
     {
         $asistencia = Asistencia::where('grupoid', $grupo)
@@ -215,18 +213,23 @@ class AsistenciaController extends Controller
                                 ->first();
 
 
-        //var_dump($asistencia);        
-         // Decodificar properties
+        if(!isset($asistencia)) {
+            $asistencia = new Asistencia();
+        }
         $comentario = '';
         if ($asistencia && $asistencia->properties) {
             $properties = json_decode($asistencia->properties, true);
-            $comentario = $properties['comentario'] ?? '';
+            $comentario = $properties['comentario'] ?? '';    
         }
+        
+
+
         return view('asistencia.partials.comentario_form', [
             'asistencia' => $asistencia,
             'grupo' => $grupo,
             'alumno' => $alumno,
             'fecha' => $fecha,
+            'fechaEditada' => TraitFunctions::intToDate($fecha),
             'comentario' => $comentario
         ]);
     }

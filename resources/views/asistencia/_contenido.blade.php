@@ -180,27 +180,30 @@ function renderAttendance(data) {
                     }
                     html += `
                         <td class="text-center">                          
-                            <div class="btn-group btn-group-sm btn-inline-primary" role="group">
-                                <button type="button" 
-                                    class="attendance-btn btn btn-sm" 
-                                    data-grupo="${grupo.idgrupo}"
-                                    data-alumno="${alumno.idalumno}"
-                                    data-fecha="${f.dia_entero}" 
-                                    data-estado="${estado}"
-                                    title="${title}">
-                                    <i class="${icon}"></i>
-                                </button>                             
-                                <button type="button" 
-                                    class="btn btn-sm"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#comentarioModal"
-                                    data-grupo="${grupo.idgrupo}"
-                                    data-alumno="${alumno.idalumno}"
-                                    data-fecha="${f.dia_entero}"
-                                    title="Añadir comentario">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
+                             <div class="btn-group btn-group-sm" role="group">
+                            <!-- Botón asistencia -->
+                            <button type="button" 
+                                class="attendance-btn btn btn-sm btn-outline-secondary"
+                                data-grupo="${grupo.idgrupo}"
+                                data-alumno="${alumno.idalumno}"
+                                data-fecha="${f.dia_entero}" 
+                                data-estado="${estado}"
+                                title="${title}">
+                                <i class="${icon}"></i>
+                            </button>                             
+
+                            <!-- Botón añadir comentario -->
+                            <button type="button" 
+                                class="btn btn-sm btn-outline-secondary" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#comentarioModal"
+                                data-grupo="${grupo.idgrupo}"
+                                data-alumno="${alumno.idalumno}"
+                                data-fecha="${f.dia_entero}"
+                                title="Añadir comentario">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
                         </td>`;
                 });
                 html += `</tr>`;

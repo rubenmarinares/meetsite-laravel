@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Meetsite - Laravel'),
+    'name' => env('APP_NAME', 'Meetsite'),
 
     /*
     |--------------------------------------------------------------------------
