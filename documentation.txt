@@ -145,7 +145,99 @@ class ProfesorRequest extends FormRequest
 
 
 -Restauración de password --> LISTO, Faltan detalles de implementación como mensajes en los distintos steps donde se solicita
--Asistencia alumnos
+-Asistencia alumnos.
+    Desde la pestaña de alumnos podremos guardar la asistencia de un alumno a sus grupos:
+        -Un grupo puede tener varios alumnos
+        -Un grupo tiene un horario
+        -Un grupo tiene un profesor
+        -Un grupo puede estar en varias aulas, dependiendo del día.
+
+    Desde la pestaña de alumnos veremos los grupos en los que está el usuario y podremos abrir el enlace asistecia grupo
+        Dentro de esta página aparecerá el día y hora en los que el alumno tiene clase con los checks para marcar la asistencia
+        Check para marcar asistencia y un input de observaciones
+
+    Esta pestaña la podremos generar de manera dinámica con buscadores:
+        desplegable de alumnos/ desplegable de grupos
+
+    Asistencia abrirá nueva pestaña--> Creamos controlador Asistencia 
+
+Vista de  PARA MARCAR LA ASISTENCIA DE USUARIOS A GRUPOS:
+
+GRUPO 1
+| Alumno     | 01/10 | 03/10 | 08/10 | 10/10 | ... |
+| ---------- | ----- | ----- | ----- | ----- | --- |
+| Juan Pérez | ✅     | ❌     | ✅     | ✅     | ... |
+| Ana López  | ✅     | ✅     | ❌     | ✅     | ... |
+
+
+GRUPO 2
+| Alumno     | 02/10 | 03/10 | 04/10 | 05/10 | ... |
+| ---------- | ----- | ----- | ----- | ----- | --- |
+| Juan Pérez | ✅     | ❌     | ✅     | ✅     | ... |
+| Ana López  | ✅     | ✅     | ❌     | ✅     | ... |
+
+
+
+
+PROPUESTA DE MODELO PARA ASISTENCIA:
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Asistencia extends Model
+{
+    protected $table = 'asistencia';
+
+    // Desactivamos incremento automático porque no hay campo "id"
+    public $incrementing = false;
+
+    // Si usas clave primaria compuesta (grupoid, alumnoid, fecha), Eloquent no las maneja de forma nativa.
+    // Puedes dejar la PK "sin definir" y trabajar con save/update/delete mediante query builder
+    // o usar un paquete externo como "eloquent-composite-primary-key".
+    protected $primaryKey = null;
+
+    protected $fillable = [
+        'grupoid',
+        'alumnoid',
+        'fecha',
+    ];
+
+    protected $casts = [
+        'fecha' => 'date',
+    ];
+
+    // Relaciones
+    public function grupo()
+    {
+        return $this->belongsTo(Grupo::class, 'grupoid');
+    }
+
+    public function alumno()
+    {
+        return $this->belongsTo(Alumno::class, 'alumnoid');
+    }
+}
+
+COMO USARLO EN EL CONTROLADOR:
+use App\Models\Asistencia;
+
+public function registrar(Request $request)
+{
+    Asistencia::create([
+        'grupoid' => $request->grupoid,
+        'alumnoid' => $request->alumnoid,
+        'fecha' => now()->toDateString(), // formato YYYY-MM-DD
+    ]);
+
+    return response()->json(['ok' => true]);
+}
+
+
+
+
 -Comunicaciones
     generaremos una nueva pestaña de comunicaciones desde donde podremos gestionar la comunicación de nuestra herramienta
     con los usuarios potenciales(profesore, alumnos, clientes, usuarios)
@@ -196,6 +288,9 @@ class ProfesorRequest extends FormRequest
                     ));
 
             Concepto de col, que hace referencia en que col se inserta
+
+
+
 
 
     Plantillas de email:

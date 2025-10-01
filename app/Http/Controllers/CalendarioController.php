@@ -49,14 +49,14 @@ class CalendarioController extends Controller
         }else{
             foreach($grupos as $grupo){
                 if($grupo["properties"] && (strlen($grupo["fechainicio"])>0 && strlen($grupo["fechafin"]>0)) ){
-                    $properties=json_decode($grupo["properties"],true);                    
+                    $properties=json_decode($grupo["properties"],true);
                     if($properties["dias"]){
                         foreach($properties["dias"] as $key=>$dia){
 
                             $inicio = \DateTime::createFromFormat('Ymd', $grupo["fechainicio"]);
                             $fin = \DateTime::createFromFormat('Ymd', $grupo["fechafin"]);
                             
-
+                            
                             //echo "Grupo: ".$grupo['grupo']."<br>";
                             while ($inicio <= $fin) {
                                 $event=[];

@@ -163,3 +163,24 @@ use App\Http\Controllers\CalendarioController;
 //Route::get('/calendario', [CalendarioController::class, 'index'])->name('calendario.index')->middleware('auth');
 Route::get('/calendario', [CalendarioController::class, 'index'])->name('calendario.index')->middleware('auth');;
 Route::get('/calendario/events', [CalendarioController::class, 'events'])->name('calendario.events');
+
+
+
+//ROUTES FOR Asistencia
+use App\Http\Controllers\AsistenciaController;
+Route::get('/asistencia', [AsistenciaController::class, 'index'])->name('asistencia.index')->middleware('auth');
+Route::post('/asistencia', [AsistenciaController::class, 'index'])->name('asistencia.index')->middleware('auth');
+Route::post('/asistencia/search', [AsistenciaController::class, 'search'])->name('asistencia.search')->middleware('auth');
+Route::post('/asistencia/update', [AsistenciaController::class, 'update'])->name('asistencia.update')->middleware('auth');
+Route::get('/asistencias/{grupo}/{alumno}/{fecha}/comentario', [AsistenciaController::class, 'comentario'])->middleware('auth');
+Route::post('/asistencias/comentario/save', [AsistenciaController::class, 'guardarComentario'])->name('asistencias.comentario.save')->middleware('auth');
+
+
+/*
+Route::get('/aulas/{aula}/view', [AulaController::class, 'view'])->name('aulas.view')->middleware('auth');
+Route::get('aulas/create',[AulaController::class,'create'])->name('aulas.create')->middleware('auth');
+Route::post('aulas',[AulaController::class,'store'])->name('aulas.store')->middleware('auth');
+Route::get('aulas/{aula}/edit',[AulaController::class,'edit'])->name('aulas.edit')->middleware('auth');
+Route::put('aulas/{aula}',[AulaController::class,'update'])->name('aulas.update')->middleware('auth');
+Route::delete('aulas/{aula}',[AulaController::class,'destroy'])->name('aulas.destroy')->middleware('auth'); 
+*/

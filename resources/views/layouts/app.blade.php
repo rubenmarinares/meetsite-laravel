@@ -250,6 +250,25 @@
     </div>
   </div>
 
+
+  <!--MODAL PARA ÑADIR COMENTARIOS A LA ASISTENCIA-->
+    <div class="modal fade" id="comentarioModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Cargando...</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="text-center py-3">
+              <div class="spinner-border" role="status"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--FIN MODAL COMENTARIOS ASISTENCIA-->
+
     <script>
 
       document.addEventListener('DOMContentLoaded', function () {
@@ -301,19 +320,7 @@
                             className: 'btn btn-sm btn-secondary',
                             exportOptions: { columns: exportableColumns }
                         }
-                    ]
-                    /*buttons: [
-                        {
-                            extend: 'excelHtml5',
-                            text: '<i class="fa fa-file-excel"></i> Excel',
-                            exportOptions: { columns: exportableColumns }
-                        },
-                        {
-                            extend: 'csvHtml5',
-                            text: '<i class="fa fa-file-csv"></i> CSV',
-                            exportOptions: { columns: exportableColumns }
-                        }
-                    ]*/
+                    ]                  
                 }
             ]
         });
@@ -325,6 +332,7 @@
       
 
       menu_click();
+      renderPlugins();
       $(".select2").select2({
           theme: 'bootstrap-5',  
           width: '100%',
@@ -334,7 +342,10 @@
             }
           }
         });
-            
+      
+      
+
+
       function renderPlugins(){
         $(".select2").select2({theme: 'bootstrap-5', width: '100%',language: {
             noResults: function () {
@@ -347,28 +358,7 @@
                   buttonClass: 'btn',
                   language: 'es'
                 });
-        });
-        
-        
-        /*
-        document.querySelectorAll(".ajax-sidepanel").forEach((item) => {
-          item.addEventListener("click", function (e) {            
-            e.preventDefault();
-            e.stopPropagation();
-            const sidepanelElement = document.getElementById('sidepanel');            
-            if (sidepanelElement) {
-
-                const sidepanelInstance = bootstrap.Offcanvas.getInstance(sidepanelElement);
-                if (sidepanelInstance) {
-                    sidepanelInstance.hide();
-                }
-            }
-            openSidepanel(item.getAttribute("href"));
-            return false;
-          },{ once: true});
-        });
-        
-        */
+        });                
       }
 
 
@@ -417,28 +407,37 @@
           })
           .catch(err => console.warn("Error cargando sidepanel:", err));
       }
-
-      /*
-      document.querySelectorAll(".ajax-sidepanel").forEach((item) => {
-        item.addEventListener("click", function (e) {
-          
-          e.preventDefault();
-          e.stopPropagation();
-          const sidepanelElement = document.getElementById('sidepanel');
-          if (sidepanelElement) {
-              const sidepanelInstance = bootstrap.Offcanvas.getInstance(sidepanelElement);
-              if (sidepanelInstance) {
-                  sidepanelInstance.hide();
-              }
-          }
-
-          openSidepanel(item.getAttribute("href"));
-          return false;
-        });
-      });
-      */
+     
 
       document.addEventListener("click", function(e) {
+
+        //MODAL COMMENTS
+        if (e.target && e.target.id === 'guardarComentario') {
+            const form = document.getElementById('comentarioForm');
+            const data = new FormData(form);
+
+            
+            fetch('/asistencias/comentario/save', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: data
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {                    
+                    const modalInstance = bootstrap.Modal.getInstance(document.getElementById('comentarioModal'));
+                    modalInstance.hide();
+                } else {
+                    alert("Error al guardar");
+                }
+            });
+            
+        }
+        //FIN //MODAL COMMENTS
+
+
         const item = e.target.closest(".ajax-sidepanel");
         if (!item) return;
 
@@ -517,7 +516,48 @@
               }
         }
     });
+
+
+    const comentarioModal = document.getElementById('comentarioModal');
+    comentarioModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const grupo = button.getAttribute('data-grupo');
+        const alumno = button.getAttribute('data-alumno');
+        const fecha = button.getAttribute('data-fecha');
+
+        const modalTitle = comentarioModal.querySelector('.modal-title');
+        const modalBody = comentarioModal.querySelector('.modal-body');
+
+        modalTitle.textContent = "Cargando comentario...";
+        modalBody.innerHTML = `
+            <div class="text-center py-3">
+              <div class="spinner-border" role="status"></div>
+            </div>
+        `;        
+
+        // Petición AJAX al backend (Laravel)
+        
+        fetch(`/asistencias/${grupo}/${alumno}/${fecha}/comentario`)
+            .then(response => response.text())
+            .then(html => {
+                modalTitle.textContent = "Añadir comentario";
+                modalBody.innerHTML = html;
+            })
+            .catch(() => {
+                modalTitle.textContent = "Error";
+                modalBody.innerHTML = `<div class="alert alert-danger">No se pudo cargar el formulario.</div>`;
+            });          
+    });
+
+
+    
+
+
+    
     </script>
+
+    
+
 </body>
 
 </html>

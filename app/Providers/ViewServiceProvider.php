@@ -35,6 +35,7 @@ class ViewServiceProvider extends ServiceProvider
                 $menuitems = [
                     0=> [ 'label'=> 'Escritorio', 'icon'=> 'fas fa-dashboard', 'url'=> 'home' ],
                     1=> [ 'label'=> 'Calendario', 'icon'=> 'fas fa-calendar', 'url'=> 'calendario' ],
+                    10=> [ 'label'=> 'Asistencia', 'icon'=> 'fa-solid fa-calendar-xmark', 'url'=> 'asistencia' ],
                     2=> [ 'label'=> 'Administración', 'icon'=> 'fas fa-cogs', 'url'=> 'admin' 
                         ,'submenu'=> [
                             0=> ['label'=> 'Academias', 'icon'=> 'fas fa-school', 'url'=> 'academias' ],
@@ -66,6 +67,7 @@ class ViewServiceProvider extends ServiceProvider
                 $menuitems = [
                     0=> [ 'label'=> 'Escritorio', 'icon'=> 'fas fa-dashboard', 'url'=> 'home' ],
                     1=> [ 'label'=> 'Calendario', 'icon'=> 'fas fa-calendar', 'url'=> 'calendario' ],
+                    10=> [ 'label'=> 'Asistencia', 'icon'=> 'fa-solid fa-calendar-xmark', 'url'=> 'asistencia' ],
                     2=> [ 'label'=> 'Administración', 'icon'=> 'fas fa-cogs', 'url'=> 'admin' 
                         ,'submenu'=> [
                             0=> ['label'=> 'Academias', 'icon'=> 'fas fa-school', 'url'=> 'academias' ],
