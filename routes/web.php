@@ -176,11 +176,39 @@ Route::get('/asistencias/{grupo}/{alumno}/{fecha}/comentario', [AsistenciaContro
 Route::post('/asistencias/comentario/save', [AsistenciaController::class, 'guardarComentario'])->name('asistencias.comentario.save')->middleware('auth');
 
 
-/*
-Route::get('/aulas/{aula}/view', [AulaController::class, 'view'])->name('aulas.view')->middleware('auth');
-Route::get('aulas/create',[AulaController::class,'create'])->name('aulas.create')->middleware('auth');
-Route::post('aulas',[AulaController::class,'store'])->name('aulas.store')->middleware('auth');
-Route::get('aulas/{aula}/edit',[AulaController::class,'edit'])->name('aulas.edit')->middleware('auth');
-Route::put('aulas/{aula}',[AulaController::class,'update'])->name('aulas.update')->middleware('auth');
-Route::delete('aulas/{aula}',[AulaController::class,'destroy'])->name('aulas.destroy')->middleware('auth'); 
-*/
+
+//ROUTES FOR Comunicación
+//PLANTILLAS
+use App\Http\Controllers\EmailController;
+Route::get('/plantillas', [EmailController::class, 'index'])->name('plantillas.index')->middleware('auth');
+Route::get('/`plantillas`/{plantilla}/view', [EmailController::class, 'view'])->name('plantillas.view')->middleware('auth');
+Route::get('plantillas/create',[EmailController::class,'create'])->name('plantillas.create')->middleware('auth');
+Route::post('plantillas',[EmailController::class,'store'])->name('plantillas.store')->middleware('auth');
+Route::get('plantillas/{plantilla}/edit',[EmailController::class,'edit'])->name('plantillas.edit')->middleware('auth');
+Route::put('plantillas/{plantilla}',[EmailController::class,'update'])->name('plantillas.update')->middleware('auth');
+Route::delete('plantillas/{plantilla}',[EmailController::class,'destroy'])->name('plantillas.destroy')->middleware('auth'); 
+
+//EDITOR DE PLANTILLAS/EMAIL
+Route::get('plantillas/{plantilla}/config',[EmailController::class,'config'])->name('plantillas.config')->middleware('auth');
+
+Route::post('plantillas/{plantilla}/addsection',[EmailController::class,'storesection'])->name('email.addSection')->middleware('auth');
+Route::get('plantillas/{plantilla}/sections', [EmailController::class, 'getSections'])->name('plantillas.sections')->middleware('auth');
+Route::delete('plantillas/{plantilla}/sections/{idsection}', [EmailController::class, 'deleteSection'])->name('plantillas.deletesection')->middleware('auth');
+Route::delete('plantillas/{plantilla}/blocks/{idblock}', [EmailController::class, 'deleteBlock'])->name('plantillas.deleteblock')->middleware('auth');
+Route::post('plantillas/{plantilla}/ordenar-secciones', [EmailController::class, 'ordenarSecciones'])->name('plantillas.ordenar')->middleware('auth');
+Route::post('plantillas/{plantilla}/ordenar-bloques', [EmailController::class, 'ordenarBloques'])->name('plantillas.ordenarBloques')->middleware('auth');
+Route::post('plantillas/{plantilla}/mover-bloques', [EmailController::class, 'moverBloques'])->name('plantillas.moverBloques')->middleware('auth');
+
+Route::get('plantillas/{section}/sectionsedit', [EmailController::class, 'editSection'])->name('plantillas.editsection')->middleware('auth');
+Route::put('plantillas/{section}/sectionsupdate', [EmailController::class, 'updateSection'])->name('plantillas.updatesection')->middleware('auth');
+
+Route::get('plantillas/{block}/blockedit', [EmailController::class, 'editBlock'])->name('plantillas.editblock')->middleware('auth');
+Route::put('plantillas/{block}/blockupdate', [EmailController::class, 'updateBlock'])->name('plantillas.updateblock')->middleware('auth');
+Route::post('plantillas/{block}/blockclone', [EmailController::class, 'cloneBlock'])->name('plantillas.blockclone')->middleware('auth');
+Route::post('plantillas/{plantilla}/addblock',[EmailController::class,'storeblock'])->name('email.addBlock')->middleware('auth');
+
+
+Route::get('email/{plantilla}', [EmailController::class, 'renderEmail'])->name('plantillas.renderemail')->middleware('auth');
+
+Route::post('email/send-test', [EmailController::class, 'sendTestEmail'])->name('plantillas.sendTestEmail')->middleware('auth');
+

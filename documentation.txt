@@ -40,6 +40,13 @@ php artisan db:seed
 Generar tabla pivot:
 php artisan make:migration create_role_user_table
 
+php artisan make:migration create_email_table
+
+//LANZAR migration
+php artisan migrate
+
+AÑADIR UN CAMPO EN UNA TABLA YA CREADA
+php artisan make:migration add_userid_to_emails_table --table=emails
 
 
 PREPARAR TRAIT EN LARAVEL PARA REUTILIZAR CÓDIGO
@@ -246,11 +253,12 @@ public function registrar(Request $request)
         -plantillas email
         -emails enviados-->filtros
         -programar envío
-        -envío de email
+        
 
-            idplantilla
-            nombre
+            idemail
+            nombre(plantilla)
             created
+            plantilla 1/0
 
             Secciones:
                 100%
@@ -306,7 +314,331 @@ public function registrar(Request $request)
 
 
 
+NUEVO ELEMENTO BLOQUES DE EMAIL
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class EmailBlock extends Model
+{
+    protected $table = 'email_blocks';
+
+    protected $fillable = [
+        'sectionid',   // referencia a email_sections.id
+        'blockid',     // referencia al tipo de bloque (blocks.id)
+        'col',         // número de columna (1, 2, 3, 4)
+        'order'        // posición dentro de la columna
+    ];
+
+    public function emailSection()
+    {
+        return $this->belongsTo(EmailSection::class, 'sectionid');
+    }
+
+    public function block()
+    {
+        return $this->belongsTo(Block::class, 'blockid');
+    }
+}
+
+CREATE TABLE email_blocks (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    sectionid BIGINT UNSIGNED NOT NULL,
+    blockid BIGINT UNSIGNED NOT NULL,
+    col TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    `order` INT UNSIGNED NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+
+    CONSTRAINT fk_email_blocks_section FOREIGN KEY (sectionid)
+        REFERENCES email_sections(id) ON DELETE CASCADE,
+
+    CONSTRAINT fk_email_blocks_block FOREIGN KEY (blockid)
+        REFERENCES blocks(id) ON DELETE CASCADE
+);
+
+
+EmailSection.php
+public function blocks()
+{
+    return $this->hasMany(EmailBlock::class, 'sectionid')
+                ->orderBy('col')
+                ->orderBy('order');
+}
+
+EmailBlock.php
+public function emailSection()
+{
+    return $this->belongsTo(EmailSection::class, 'sectionid');
+}
+
+public function block()
+{
+    return $this->belongsTo(Block::class, 'blockid');
+}
+
+🚀 Ejemplo de uso
+// Obtener todas las secciones de un email con sus bloques organizados
+$email = Email::with(['sections.blocks'])->find($emailId);
+
+// Acceder a los bloques de la primera sección, columna 2
+$blocksCol2 = $email->sections->first()->blocks->where('col', 2);
+
+<div id="section12-col2" class="RowBlocks" data-idsection="12" data-col="2"></div>
+Puedes usar col directamente para saber dónde insertar el bloque:
+
+js
+Copiar código
+addBlock(sectionId, blockId, col, order)
+Y guardarlo así:
+
+php
+Copiar código
+EmailBlock::create([
+    'sectionid' => $sectionId,
+    'blockid' => $blockId,
+    'col' => $col,
+    'order' => $order
+]);
+
+
+
+create_email_blocks_table.php
+
+Guárdalo en database/migrations/YYYY_MM_DD_HHMMSS_create_email_blocks_table.php
+(usa php artisan make:migration create_email_blocks_table para generarlo y luego reemplaza el contenido).
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('email_blocks', function (Blueprint $table) {
+            $table->id();
+
+            // 🔗 Relación con email_sections
+            $table->foreignId('sectionid')
+                  ->constrained('email_sections')
+                  ->onDelete('cascade');
+
+            // 🔗 Relación con blocks
+            $table->foreignId('blockid')
+                  ->constrained('blocks')
+                  ->onDelete('cascade');
+
+            // 🧩 Columna dentro de la sección (1 a 4)
+            $table->tinyInteger('col')->default(1)->comment('Número de columna dentro de la sección');
+
+            // 🔢 Orden del bloque dentro de la columna
+            $table->integer('order')->default(0)->comment('Posición del bloque en la columna');
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('email_blocks');
+    }
+};
+
+
+🧩 Modelo EmailBlock.php
+
+Crea en app/Models/EmailBlock.php:
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class EmailBlock extends Model
+{
+    protected $table = 'email_blocks';
+
+    protected $fillable = [
+        'sectionid',
+        'blockid',
+        'col',
+        'order',
+    ];
+
+    public function emailSection()
+    {
+        return $this->belongsTo(EmailSection::class, 'sectionid');
+    }
+
+    public function block()
+    {
+        return $this->belongsTo(Block::class, 'blockid');
+    }
+}
+
+🔗 Actualiza también tu modelo EmailSection.php:
+public function blocks()
+{
+    return $this->hasMany(EmailBlock::class, 'sectionid')
+                ->orderBy('col')
+                ->orderBy('order');
+}
+
+🧠 Ejemplo de uso
+// Añadir un bloque a una sección y columna concreta
+EmailBlock::create([
+    'sectionid' => $sectionId,
+    'blockid' => $blockId,
+    'col' => 2,     // columna 2
+    'order' => 1    // primer bloque
+]);
+
+// Obtener bloques de la sección ordenados por columna y posición
+$blocks = EmailSection::with('blocks')->find($sectionId);
 
 
 
 
+
+//MAILABLE PERSONALIZADO
+
+
+ php artisan make:mail CustomHtmlEmail
+
+✅ 1️⃣ Crear un Mailable personalizado
+
+Ejecuta en consola:
+
+php artisan make:mail CustomHtmlEmail
+
+
+Esto creará el archivo:
+app/Mail/CustomHtmlEmail.php
+
+✅ 2️⃣ Editar el CustomHtmlEmail
+
+Abre ese archivo y modifícalo así:
+
+<?php
+
+namespace App\Mail;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
+use Illuminate\Queue\SerializesModels;
+
+class CustomHtmlEmail extends Mailable
+{
+    use Queueable, SerializesModels;
+
+    public string $subjectText;
+    public string $htmlContent;
+
+    /**
+     * Create a new message instance.
+     */
+    public function __construct(string $subjectText, string $htmlContent)
+    {
+        $this->subjectText = $subjectText;
+        $this->htmlContent = $htmlContent;
+    }
+
+    /**
+     * Build the message.
+     */
+    public function build()
+    {
+        return $this->subject($this->subjectText)
+                    ->html($this->htmlContent);
+    }
+}
+
+
+🔹 Aquí usamos ->html() directamente para renderizar HTML “raw” (sin necesidad de una vista Blade).
+🔹 Si prefieres una vista Blade, puedes usar ->view('emails.tu_vista').
+
+✅ 3️⃣ Enviar el email desde tu controlador
+
+Por ejemplo, en EmailController o cualquier otro:
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CustomHtmlEmail;
+
+public function sendCustomEmail(Request $request)
+{
+    $to = 'usuario@ejemplo.com';
+    $subject = 'Bienvenido a Meetsite!';
+    $html = '
+        <h1 style="color:#0A879F;">¡Hola!</h1>
+        <p>Este es un correo de prueba con contenido HTML personalizado.</p>
+        <p>Enviado desde Laravel 💌</p>
+    ';
+
+    Mail::to($to)->send(new CustomHtmlEmail($subject, $html));
+
+    return response()->json(['message' => 'Correo enviado correctamente a '.$to]);
+}
+
+✅ 4️⃣ Si prefieres usar una vista Blade
+
+Crea el archivo:
+resources/views/emails/custom.blade.php
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{{ $subject }}</title>
+</head>
+<body style="font-family:Arial, sans-serif;">
+  <h1 style="color:#0A879F;">Hola {{ $name ?? '' }}!</h1>
+  <p>{{ $messageBody }}</p>
+</body>
+</html>
+
+
+Y en tu CustomHtmlEmail.php cambias:
+
+public function build()
+{
+    return $this->subject($this->subjectText)
+                ->view('emails.custom')
+                ->with([
+                    'subject' => $this->subjectText,
+                    'name' => 'Pepe',
+                    'messageBody' => 'Este es un correo de prueba con Blade.'
+                ]);
+}
+
+✅ 5️⃣ Configuración de correo (ya la tienes)
+
+Como tu email de recuperación funciona, no necesitas tocar .env, pero por si acaso, verifica que tengas algo así:
+
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=tu_usuario@gmail.com
+MAIL_PASSWORD=tu_contraseña_o_token
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=no-reply@tudominio.com
+MAIL_FROM_NAME="Meetsite"
+
+✅ 6️⃣ Resultado final
+
+Puedes enviar emails con HTML libre o con Blade a cualquier destinatario, ejemplo:
+
+Mail::to('cliente@empresa.com')->send(new CustomHtmlEmail(
+    'Notificación importante',
+    '<strong>Hola!</strong><br>Este es un mensaje enviado desde Laravel con HTML personalizado.'
+));

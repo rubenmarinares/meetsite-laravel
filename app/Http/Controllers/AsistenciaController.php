@@ -27,7 +27,8 @@ class AsistenciaController extends Controller
                             $query->where('academiaid', session('academia_set')->id);
                         })->get();
 
-        $grupos = Grupo::whereHas('academiasRelation',function($query){
+        $grupos = Grupo::where('status',1)->
+                    whereHas('academiasRelation',function($query){
                         $query->where('academiaid',session('academia_set')->id);
                     })->get();
 
@@ -79,13 +80,15 @@ class AsistenciaController extends Controller
 
         //PRIMERO EL GRUPO: Si no viene grupo, buscamos todos los grupos
         if($idgrupo==''){            
-            $grupos = Grupo::whereHas('academiasRelation',function($query){
+            $grupos = Grupo::where('status',1)->
+                    whereHas('academiasRelation',function($query){
                         $query->where('academiaid',session('academia_set')->id);
                     })
                     ->orderBy('grupo', 'asc') 
                     ->get();            
         }else{
-            $grupos = Grupo::whereHas('academiasRelation',function($query) use($idgrupo){
+            $grupos = Grupo::where('status',1)->
+                    whereHas('academiasRelation',function($query) use($idgrupo){
                         $query->where('academiaid',session('academia_set')->id);
                     })->where('id',$idgrupo)
                     ->orderBy('grupo', 'asc') 
@@ -120,8 +123,7 @@ class AsistenciaController extends Controller
                     $inicio = ($grupoInicio->getTimestamp() > $mesInicio->getTimestamp()) ? clone $grupoInicio : clone $mesInicio;
                     $fin    = ($grupoFin->getTimestamp() < $mesFin->getTimestamp()) ? clone $grupoFin : clone $mesFin;            
                                         
-                    if ($inicio > $fin) {
-                        //echo "No hay fechas disponibles para este grupo en el mes seleccionado.<br><hr>";
+                    if ($inicio > $fin) {                     
                         continue; 
                     }
                     
@@ -141,22 +143,10 @@ class AsistenciaController extends Controller
                         ->toArray();
                                         
 
-                    while ($inicio <= $fin) {                                                
-                        //echo "Estamos en fecha: ".$inicio->format('Y-m-d')." dia: ".$inicio->format('N')."\n";
-                        //echo "INICIO FORMAT: ".$inicio->format('N')."\n";
-                        //var_export($properties["dias"]);
-                        //echo "<hr>";
-
-
-                        if(isset($properties["dias"][intval($inicio->format('N'))-1]) && $properties["dias"][intval($inicio->format('N'))-1]==1){
-                            //echo "MATCH DÍA: AÑADIMOS dia ".$inicio->format('Y-m-d')."\n";
+                    while ($inicio <= $fin) {                                                                        
+                        if(isset($properties["dias"][intval($inicio->format('N'))-1]) && $properties["dias"][intval($inicio->format('N'))-1]==1){                            
                             $addFechas[]=["fecha"=>$inicio->format('Y-m-d'),"dia"=>$inicio->format('N'),"dia_entero"=>(int)$inicio->format('Ymd')];
-                        }
-
-                        
-                        /*if (in_array($inicio->format('N'), $properties["dias"])) {                            
-
-                        }*/
+                        }                        
                         $inicio->modify('+1 day');
                     }
                     $addAlumnos=array();                    
@@ -169,8 +159,7 @@ class AsistenciaController extends Controller
                                 }
                             }
                         }
-                    }
-                    //Necesitamos ahora buscar las asistencias para cada alumno, fecha y grupo
+                    }                    
                     $gruposNew[]=["grupo"=>$grupo->grupo,"idgrupo"=>$grupo->id,"fechas"=>$addFechas,"alumnos"=>$addAlumnos,"asistencias"=>$asistencias];
                 }
             }

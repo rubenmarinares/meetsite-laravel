@@ -6,29 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!--<link rel="icon" href="/favicon.ico" type="image/x-icon">-->
-
     
     <link rel="icon" href="/meetsite-blanco.ico" type="image/x-icon">
     <title>{{ config('app.name', 'meetsite laravel') }}</title>
-
-
-<!-- [Template CSS Files] -->
-    
+    <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="{{asset('assets/css/style.css')}}" id="main-style-link" >
-    <link rel="stylesheet" href="{{asset('assets/css/style-preset.css')}}" >
-    
-
+    <link rel="stylesheet" href="{{asset('assets/css/style-preset.css')}}" >    
+    <!--SELECT 2-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!--FONT AWESOME-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
     <!-- Jquery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-
     <!-- Select2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
 
 
     <!-- BOOTSTRAP-->
@@ -70,6 +63,20 @@
     <!--<script src="{{asset('assets/js/fonts/custom-font.js')}}"></script>-->
     <!--<script src="{{asset('assets/js/plugins/validate/jquery.validate.min.js')}}"></script>-->
     <!--<script src="{{asset('assets/js/plugins/validate/localization/messages_es.min.js')}}"></script>-->
+
+    <!--SORTABLE JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+
+    <!--SUMMERNOTE-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.js"></script>
+    <!--
+      
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/lang/summernote-es-ES.min.js"></script>
 
     <style>
 
@@ -192,7 +199,255 @@
 
 
 
-    </style>
+  /* Para depuración: que se vea claro cuándo actúa Sortable */
+  .sortable-chosen {
+    outline: 2px dashed #007bff !important;
+    background-color: #e7f1ff !important;
+    opacity: 0.9 !important;
+    transform: none !important;    
+     width: 100% !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch;
+
+  }
+
+  .sortable-ghost {
+      opacity: 0.5 !important;
+      background-color: #d6e4ff !important;
+      border: 2px dashed #efd808 !important;
+      min-height: 40px;
+      width: 100% !important;
+      display: flex !important;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sortable-drag {
+     width: 100% !important;
+     opacity: 0.8 !important;
+     transform: scale(1.02) !important;
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15) !important;
+     z-index: 9999 !important;
+     display: flex !important;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+/* Garantizar que el clon se vea dentro del contenedor */
+.block, .element {
+  position: relative;
+  transition: all 0.15s ease-in-out;
+}
+
+
+
+
+
+
+.border{margin-bottom: 10px;border: 1px solid rgba(0,0,0,.125) !important;}
+
+
+    .handle{cursor: cell;}
+    .RowBlocks{min-height:40px;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                flex: 1 1 0%;
+                min-width: 0;
+            }
+
+  
+
+    /*diseño bloques */
+    /* --- BLOQUES --- */
+.blocktoolbar {
+    display: none;
+    z-index: 10;
+    transition: opacity 0.2s ease-in-out;
+    right:0;
+    gap: 0.5rem; /* Espaciado entre iconos */
+    background: rgba(255, 255, 255, 0.8);    
+    backdrop-filter: blur(6px);
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 4px;
+    opacity: 0.8;
+}
+
+.blocktoolbar .btn{
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px !important;
+  transition: all 0.2s ease;
+   border: none;   
+
+}
+
+
+.blocktoolbar .btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  /*transform: translateY(-1px);*/
+}
+
+.blocktoolbar .btn:active {
+  transform: translateY(0);
+  box-shadow: none !important;
+}
+
+
+
+.block:hover .blocktoolbar {
+    display: flex;
+    opacity: 1;
+}
+
+.block {
+    position: relative;
+    transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;    
+    display: block;
+    width: 100%;
+}
+
+.block:hover {
+    box-shadow: 0 0 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.blocktoolbar .btn {
+    border: none;
+    box-shadow: none !important;
+    padding: 4px 6px;
+    background: rgba(255,255,255,0.9);
+    transition: background 0.2s ease-in-out;
+}
+
+.blocktoolbar .btn:hover {
+    background: #f1f3f5;
+}
+
+
+/* --- FILAS --- */
+.rowtoolbar {
+    display: none;
+    z-index: 10;
+    transition: opacity 0.2s ease-in-out;
+    right:0;
+    gap: 0.5rem; /* Espaciado entre iconos */
+    
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(6px);
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 4px;
+}
+.rowtoolbar .btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px !important;
+  transition: all 0.2s ease;
+   border: none;
+   
+}
+.rowtoolbar .btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.rowtoolbar .btn:active {
+  transform: translateY(0);
+  box-shadow: none !important;
+}
+
+.rowdiv:hover .rowtoolbar {
+    display: flex;
+    opacity: 1;
+}
+
+.rowdiv {
+    position: relative;
+    transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.rowdiv:hover {
+    box-shadow: 0 0 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.rowtoolbar .btn {
+    border: none;
+    box-shadow: none !important;
+    padding: 4px 6px;
+    background: rgba(255,255,255,0.9);
+    transition: background 0.2s ease-in-out;
+}
+
+.rowtoolbar .btn:hover {
+    background: #f1f3f5;
+}
+
+    /* ----- LAYOUT COLUMNS ----- */
+
+    /* Sidebar fija solo en pantallas grandes */
+    @media (min-width: 992px) { /* lg breakpoint de Bootstrap */
+      .sticky-sidebar {
+          position: sticky;
+          top: 1rem;
+          height: calc(100vh - 2rem);
+          overflow-y: auto;
+          z-index: 100;
+      }
+      .scrollable-content {
+          height: calc(100vh - 2rem);
+          overflow-y: auto;
+      }
+    }
+
+    /* En pantallas pequeñas: comportamiento normal (scroll de toda la página) */
+  @media (max-width: 991.98px) {
+    .sticky-sidebar {
+        position: static;
+        height: auto;
+        overflow: visible;
+        margin-bottom: 1rem;
+    }
+    .scrollable-content {
+        height: auto;
+        overflow: visible;
+    }
+  }
+
+
+  /*style summernote*/
+  .note-editor {
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .note-toolbar {
+    background-color: var(--bs-light, #f8f9fa);
+    border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+    padding: 0.25rem 0.5rem;
+  }
+
+.note-btn {
+  border-radius: 0.3rem !important;
+  font-size: 0.875rem;
+}
+
+.note-editable {
+  background-color: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #212529);
+  min-height: 120px;
+}
+</style>
 
 
 </head>
@@ -273,6 +528,7 @@
     <!--FIN MODAL COMENTARIOS ASISTENCIA-->
 
     <script>
+
 
       document.addEventListener('DOMContentLoaded', function () {
           setTimeout(function () {
@@ -382,6 +638,7 @@
       }
 
       async function openSidepanel(url) {
+        console.log("open Sidepanel",url)
         const isLoggedIn = await checkAuth();
         if (!isLoggedIn) return;
 
@@ -486,18 +743,32 @@
             window.location.href = '/login';
             return false;
           } 
+
+          console.log("response",response.status)
           if (response.status === 422) {               
               return response.text().then(html => {
                 document.getElementById('sidepanel-body').innerHTML = html;
                 renderPlugins(document.getElementById('sidepanel'));            
               });
           }
-          if (response.status === 200) {                
+          if (response.status === 200) {
+            //console.log("Response status", response.status);
+
+            // Leer la respuesta (aunque no la uses) para cerrar el stream correctamente
+            return response.text().then(() => {
               const url = new URL(window.location.href);
-              if(tab>0){
+              //console.log("url", url.toString());
+              if (tab > 0) {
                 url.searchParams.set('tab', tab);
               }
-              window.location.href = url.toString();                
+              const newUrl = url.toString();
+              //console.log("Redirecting to:", newUrl);              
+              if (newUrl !== window.location.href) {
+                window.location.href = newUrl;
+              } else {
+                window.location.reload(); // Si es la misma, recarga
+              }
+            });
           }
         })          
         .catch(err => {

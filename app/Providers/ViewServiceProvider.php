@@ -79,7 +79,14 @@ class ViewServiceProvider extends ServiceProvider
                             10=> ['label'=> 'Grupos', 'icon'=> 'fas fa-folder', 'url'=> 'grupos' ],                           
                             7=> ['label'=> 'Usuarios', 'icon'=> 'fas fa-users', 'url'=> 'users' ],                            
                         ],
-                    ],                                     
+                    ], 
+                    20=> [ 'label'=> 'Comunicaciones', 'icon'=> 'fa-solid fa-satellite-dish', 'url'=> 'comunicaciones' 
+                        ,'submenu'=> [
+                            0=> ['label'=> 'Plantillas email', 'icon'=> 'fa-solid fa-envelopes-bulk', 'url'=> 'plantillas' ],
+                            2=> ['label'=> 'Programar envío', 'icon'=> 'fa-solid fa-calendar-days', 'url'=> 'programar-envios' ],
+                            1=> ['label'=> 'Email enviados', 'icon'=> 'fa-solid fa-paper-plane', 'url'=> 'envios' ], 
+                        ],
+                    ],
                     /*4=> [ 'label'=> 'Financiero', 'icon'=> 'fas fa-coins', 'url'=> 'accounting/index' 
                         ,'submenu'=> [
                             0=> ['label'=> 'Resumen', 'icon'=> 'fas fa-tachometer-alt', 'url'=> 'accounting/index' ],
